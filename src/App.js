@@ -1,12 +1,16 @@
 import React from 'react';
-import userManagement from './components/userManagement';
-
+import UserManagement from './components/UserManagement';
+import NavBar from './components/NavBar';
+import SideBar from './components/SideBar';
 
 function App() {
   return (
-    <div className="App">
-      <userManagement/>
-    </div>
+    <>
+    <NavBar />
+    <SideBar/>
+    <UserManagement />
+    </>
+
   );
 }
 

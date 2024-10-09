@@ -1,13 +1,13 @@
 import React from 'react'
 
-function userManagement() {
+function UserManagement() {
   return (
     <>
-    <div>
-        <h1>User Management</h1>
+    <div className='container'>
+
     </div>
     </>
   )
 }
 
-export default userManagement
+export default UserManagement
