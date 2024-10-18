@@ -1,18 +1,19 @@
 import React from 'react'
 
-function UserManagement() {
+function Users() {
   return (
     <>
     <div className='container mt-4 rounded-5 shadow p-3'>
-      <h2 className='text-center'>Book Management</h2>
+      <h2 className='text-center'>BookHub Users</h2>
       <div className='container mt-4 d-flex justify-content-center'>
-      <table className="table table-striped table-hover">
+      <table class="table table-striped table-hover">
         <thead>
           <tr>
             <th scope="col">SI no</th>
-            <th scope="col">Book Name</th>
-            <th scope="col">Author</th>
-            <th scope="col">ISB Number</th>
+            <th scope="col">UserID</th>
+            <th scope="col">Name</th>
+            <th scope="col">Institution</th>
+            <th scope="col">Books Choosen</th>
           </tr>
         </thead>
         <tbody>
@@ -21,17 +22,20 @@ function UserManagement() {
             <td>Mark</td>
             <td>Otto</td>
             <td>@mdo</td>
+            <td>@mdo</td>
           </tr>
           <tr>
             <th scope="row">2</th>
             <td>Jacob</td>
             <td>Thornton</td>
             <td>@fat</td>
+            <td>@mdo</td>
           </tr>
           <tr>
             <th scope="row">3</th>
             <td colspan="2">Larry the Bird</td>
             <td>@twitter</td>
+            <td>@mdo</td>
           </tr>
         </tbody>
       </table>
@@ -41,4 +45,4 @@ function UserManagement() {
   )
 }
 
-export default UserManagement
+export default Users
