@@ -3,7 +3,7 @@ import React from 'react'
 function ProvideForm() {
   return (
     <>
-    <div className='container mt-5 mb-5'>
+    <div className='container ms-5 shadow rounded-5 mt-5 mb-5'>
         <h2 className='text-center mb-3'>Provide Form</h2>
         <div className='container'>
             <form>
@@ -33,7 +33,7 @@ function ProvideForm() {
                         </tr>
                     </tbody>
                 </table>
-                <button className='btn btn-dark'>Submit</button>
+                <button className='mb-4 btn btn-dark'>Submit</button>
             </form>
                 
 

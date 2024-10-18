@@ -11,7 +11,7 @@ function App() {
     <NavBar/>
 
     <div className='container-fluid d-flex'>
-      <div className='col-2'>
+      <div className='col-2 '>
         <SideBar/>
       </div>
       <div className='col-9'>

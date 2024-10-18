@@ -3,7 +3,7 @@ import React from 'react'
 function Users() {
   return (
     <>
-    <div className='container mt-4 rounded-5 shadow p-3'>
+    <div className='container ms-5 mt-4 rounded-5 shadow p-3'>
       <h2 className='text-center'>BookHub Users</h2>
       <div className='container mt-4 d-flex justify-content-center'>
       <table class="table table-striped table-hover">
