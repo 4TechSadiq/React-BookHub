@@ -4,6 +4,7 @@ import NavBar from './components/NavBar';
 import SideBar from './components/SideBar';
 import Users from './components/Users';
 import ProvideForm from './components/ProvideForm';
+import AllBooks from './components/AllBooks';
 
 function App() {
   return (
@@ -15,9 +16,10 @@ function App() {
         <SideBar/>
       </div>
       <div className='col-9'>
-        <UserManagement/>
-        <Users/>
-        <ProvideForm/>
+         <UserManagement/>
+        {/*<Users/>
+        <ProvideForm/> */}
+        {/* <AllBooks/> */}
       </div>
 
     </div>
