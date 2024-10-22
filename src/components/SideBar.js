@@ -1,5 +1,8 @@
 import React from 'react'
 import { Link } from 'react-router-dom'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+
+
 
 function SideBar() {
   return (
@@ -9,11 +12,14 @@ function SideBar() {
                 {/* <a href="/" class="d-flex align-items-center pb-3 mb-md-0 me-md-auto text-white text-decoration-none">
                     <span class="fs-5 d-none d-sm-inline">Menu</span>
                 </a> */}
-                <Link to='/' class="d-flex align-items-center pb-3 mb-md-0 me-md-auto text-secondary text-decoration-none">
-                    <span class=" d-none d-sm-inline">Dashboard</span>
-                </Link>
+                
                 
                 <ul class="nav nav-pills flex-column mb-sm-auto mb-0 align-items-center align-items-sm-start" id="menu">
+                    <li className='nav-item'>
+                        <Link to='/' class="nav-link btn text-secondary align-middle px-0">
+                            <span class=" d-none d-sm-inline">Dashboard</span>
+                        </Link>
+                    </li>
                     <li class="nav-item">
                         {/* <a href="#" class="nav-link btn text-secondary align-middle px-0">
                             <i class="fs-4 bi-house"></i> <span class="ms-1 d-none d-sm-inline">Dashboard</span>
