@@ -48,8 +48,9 @@ function SideBar() {
                         </Link>
                     </li>
                     <li>
-                        <a href="#" class="nav-link btn text-secondary px-0 align-middle">
-                            <i class="fs-4 bi-people"></i> <span class="ms-1 d-none d-sm-inline">Payments</span> </a>
+                    <Link to='/catelog' class="nav-link btn text-secondary align-middle px-0">
+                            <i class="fs-4 bi-house"></i> <span class="ms-1 d-none d-sm-inline">Add User</span>
+                        </Link>
                     </li>
                 </ul>
                 <hr></hr>
