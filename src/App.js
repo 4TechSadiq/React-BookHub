@@ -16,12 +16,7 @@ function App() {
         <BrowserRouter>
           <Routes>
             <Route path='/' element={<Dashboard/>}/>
-            {/* <Route path="/home" element={<Dashboard />}> */}
               <Route path=':section' element={<Dashboard/>}/>
-            {/* </Route> */}
-            {/* <Route path='/usersManagement' element={<UserManagement/>}/>
-            <Route path='/provide' element={<ProvideForm/>}/>
-            <Route path='/books' element={<AllBooks/>}/> */}
           </Routes>
         </BrowserRouter>
       </div>
