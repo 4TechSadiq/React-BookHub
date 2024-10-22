@@ -1,27 +1,39 @@
 import React from 'react'
+import { Link } from 'react-router-dom'
 
 function SideBar() {
   return (
     <>
             <div class="shadow">
-            <div class="d-flex flex-column align-items-center align-items-sm-start px-3 pt-2 text-white min-vh-100">
-                <a href="/" class="d-flex align-items-center pb-3 mb-md-0 me-md-auto text-white text-decoration-none">
+            <div class="d-flex flex-column align-items-center align-items-sm-start px-5 pt-2 text-white min-vh-100">
+                {/* <a href="/" class="d-flex align-items-center pb-3 mb-md-0 me-md-auto text-white text-decoration-none">
                     <span class="fs-5 d-none d-sm-inline">Menu</span>
-                </a>
+                </a> */}
+                <Link to='/' class="d-flex align-items-center pb-3 mb-md-0 me-md-auto text-secondary text-decoration-none">
+                    <span class=" d-none d-sm-inline">Dashboard</span>
+                </Link>
+                
                 <ul class="nav nav-pills flex-column mb-sm-auto mb-0 align-items-center align-items-sm-start" id="menu">
                     <li class="nav-item">
-                        <a href="#" class="nav-link btn text-secondary align-middle px-0">
+                        {/* <a href="#" class="nav-link btn text-secondary align-middle px-0">
                             <i class="fs-4 bi-house"></i> <span class="ms-1 d-none d-sm-inline">Dashboard</span>
-                        </a>
+                        </a> */}
+                        <Link to='/provideform' class="nav-link btn text-secondary align-middle px-0">
+                            <i class="fs-4 bi-house"></i> <span class="ms-1 d-none d-sm-inline">Provide Form</span>
+                        </Link>
                     </li>
                     <li>
-                        <a href="#submenu1" data-bs-toggle="collapse" class="nav-link btn text-secondary px-0 align-middle">
-                            <i class="fs-4 bi-speedometer2"></i> <span class="ms-1 d-none d-sm-inline">All Books</span> </a>
+                        
+                        <Link to='/allbooks' class="nav-link btn text-secondary align-middle px-0">
+                            <i class="fs-4 bi-house"></i> <span class="ms-1 d-none d-sm-inline">All Books</span>
+                        </Link>
+                        
                         
                     </li>
                     <li>
-                        <a href="#" class="nav-link btn text-secondary px-0 align-middle">
-                            <i class="fs-4 bi-table"></i> <span class="ms-1 d-none d-sm-inline">User Management</span></a>
+                    <Link to='/usersmanagement' class="nav-link btn text-secondary align-middle px-0">
+                            <i class="fs-4 bi-house"></i> <span class="ms-1 d-none d-sm-inline">User Management</span>
+                    </Link>
                     </li>
                     
                     <li>

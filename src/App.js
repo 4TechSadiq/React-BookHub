@@ -5,27 +5,27 @@ import SideBar from './components/SideBar';
 import Users from './components/Users';
 import ProvideForm from './components/ProvideForm';
 import AllBooks from './components/AllBooks';
+import { BrowserRouter, Route, Routes } from 'react-router-dom';
+import Dashboard from './components/Dashboard';
 
 function App() {
   return (
     <>
-    <NavBar/>
-
-    <div className='container-fluid d-flex'>
-      <div className='col-2 '>
-        <SideBar/>
+    <div className='container-fluid'>
+        {/* <SideBar/> */}
+        <BrowserRouter>
+          <Routes>
+            <Route path='/' element={<Dashboard/>}/>
+            {/* <Route path="/home" element={<Dashboard />}> */}
+              <Route path=':section' element={<Dashboard/>}/>
+            {/* </Route> */}
+            {/* <Route path='/usersManagement' element={<UserManagement/>}/>
+            <Route path='/provide' element={<ProvideForm/>}/>
+            <Route path='/books' element={<AllBooks/>}/> */}
+          </Routes>
+        </BrowserRouter>
       </div>
-      <div className='col-9'>
-         <UserManagement/>
-        {/*<Users/>
-        <ProvideForm/> */}
-        {/* <AllBooks/> */}
-      </div>
 
-    </div>
-
-    {/* <SideBar/>
-    <UserManagement /> */}
     </>
 
   );

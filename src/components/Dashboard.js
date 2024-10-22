@@ -1,8 +1,39 @@
-import React from 'react'
+import React, { useState } from 'react'
+import SideBar from './SideBar'
+import NavBar from './NavBar'
+import ProvideForm from './ProvideForm'
+import { useParams } from 'react-router-dom'
+import AllBooks from './AllBooks'
+import UserManagement from './UserManagement'
+
+
 
 function Dashboard() {
+  const {section} = useParams();
+
+  const sectionMap = {
+    "dashboard":<ProvideForm/>,
+    "provideform": <ProvideForm/>,
+    "allbooks": <AllBooks/>,
+    "usersmanagement": <UserManagement/>,
+  }
+  let selectedSection = sectionMap[section]
+  if(section == undefined){
+    // window.location.href = '/dashboard'
+    selectedSection = <ProvideForm/>
+  }
   return (
-    <div>Dashboard</div>
+    <>
+      <NavBar/>
+      <div className='container-fluid d-flex'>
+        <div className='col-lg-2'>
+          <SideBar/>
+        </div>
+        <div className='col-lg-10'>
+          {selectedSection}
+        </div>
+      </div>
+    </>
   )
 }
 
