@@ -5,6 +5,7 @@ import ProvideForm from './ProvideForm'
 import { useParams } from 'react-router-dom'
 import AllBooks from './AllBooks'
 import UserManagement from './UserManagement'
+import Catelogs from './Catelogs'
 
 
 
@@ -13,7 +14,7 @@ function Dashboard() {
 
   const sectionMap = {
     "dashboard":<ProvideForm/>,
-    "provideform": <ProvideForm/>,
+    "provideform": <Catelogs/>,
     "allbooks": <AllBooks/>,
     "usersmanagement": <UserManagement/>,
   }
