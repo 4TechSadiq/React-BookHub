@@ -38,7 +38,7 @@ function SideBar() {
                     </li>
                     <li>
                     <Link to='/usersmanagement' class="nav-link btn text-secondary align-middle px-0">
-                            <i class="fs-4 bi-house"></i> <span class="ms-1 d-none d-sm-inline">User Management</span>
+                            <i class="fs-4 bi-house"></i> <span class="ms-1 d-none d-sm-inline">List Users</span>
                     </Link>
                     </li>
                     
