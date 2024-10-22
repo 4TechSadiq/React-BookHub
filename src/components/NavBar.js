@@ -10,7 +10,7 @@ function NavBar() {
                 <span className="navbar-toggler-icon"></span>
                 </button>
                 <div className="collapse navbar-collapse" id="navbarNav">
-                <ul className="navbar-nav">
+                <ul className="navbar-nav me-auto">
                     <li className="nav-item">
                     <a className="nav-link active" aria-current="page" href="#"></a>
                     </li>
@@ -24,6 +24,9 @@ function NavBar() {
                     <a className="nav-link disabled" aria-disabled="true"></a>
                     </li>
                 </ul>
+                <div className='d-flex ms-auto'>
+                    <button className='btn shadow btn-dark'>Logout</button>
+                </div>
                 </div>
             </div>
         </nav>
