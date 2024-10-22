@@ -6,6 +6,7 @@ import { useParams } from 'react-router-dom'
 import AllBooks from './AllBooks'
 import UserManagement from './UserManagement'
 import Catelogs from './Catelogs'
+import AddUser from './AddUser'
 
 
 
@@ -17,7 +18,8 @@ function Dashboard() {
     "provideform": <ProvideForm/>,
     "allbooks": <AllBooks/>,
     "usersmanagement": <UserManagement/>,
-    "catelog": <Catelogs/>
+    "catelog": <Catelogs/>,
+    "adduser": <AddUser/>
   }
   let selectedSection = sectionMap[section]
   if(section == undefined){
