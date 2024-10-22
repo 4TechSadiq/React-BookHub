@@ -14,9 +14,10 @@ function Dashboard() {
 
   const sectionMap = {
     "dashboard":<ProvideForm/>,
-    "provideform": <Catelogs/>,
+    "provideform": <ProvideForm/>,
     "allbooks": <AllBooks/>,
     "usersmanagement": <UserManagement/>,
+    "catelog": <Catelogs/>
   }
   let selectedSection = sectionMap[section]
   if(section == undefined){
