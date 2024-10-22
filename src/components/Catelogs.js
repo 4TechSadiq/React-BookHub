@@ -40,6 +40,34 @@ function Catelogs() {
             </div>
             
         </div>
+
+        <div className='container shadow rounded-4'>
+            <h2 className='text-center mt-5'>Add catelog</h2>
+            <div className='col-lg-6 p-5'>
+                <form>
+                    <div className='mb-3'>
+                        <label for='catelogName' className='form-label'>Catelog Name</label>
+                        <input type='text' className='form-control' id='catelogName'></input>
+                    </div>
+                    <div className='mb-3'>
+                        <label for='catelogDescription' className='form-label'>Catelog Description</label>
+                        <textarea className='form-control' id='catelogDescription'></textarea>
+                    </div>
+                    <div className='mb-3'>
+                        <label for='catelogName' className='form-label'>Books in catelog</label>
+                        <input type='text' className='form-control' id='catelogName'></input>
+                    </div>
+                    <div className='mb-3'>
+                        <label for='catelogImage' className='form-label'>Catelog Image</label>
+                        <input type='file' className='form-control' id='catelogImage'></input>
+                    </div>
+                    <div className='mb-3 d-flex justify-content-center'>
+                        <button className='btn btn-dark'>Submit</button>
+                    </div>
+                </form>
+            </div>
+            
+        </div>
     </>
   )
 }
