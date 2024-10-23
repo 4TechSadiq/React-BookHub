@@ -3,7 +3,7 @@ import React from 'react'
 function ProvideForm() {
   return (
     <>
-    <div className='container p-4 ms-5 shadow rounded-5 mt-5 mb-5'>
+    <div className='container p-4 ms-3 shadow rounded-5 mt-5 mb-5'>
         <h2 className='text-center mb-3'>Provide Form</h2>
         <div className='container'>
             <form>
