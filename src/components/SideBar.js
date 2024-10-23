@@ -1,6 +1,8 @@
 import React from 'react'
 import { Link } from 'react-router-dom'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+
+
+
 
 
 
@@ -16,6 +18,7 @@ function SideBar() {
                 
                 <ul class="nav nav-pills flex-column mb-sm-auto mb-0 align-items-center align-items-sm-start" id="menu">
                     <li className='nav-item'>
+                    
                         <Link to='/' class="nav-link btn text-secondary align-middle px-0">
                             <span class=" d-none d-sm-inline">Dashboard</span>
                         </Link>
