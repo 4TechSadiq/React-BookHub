@@ -9,7 +9,6 @@ import Catelogs from './Catelogs'
 import AddUser from './AddUser'
 
 
-
 function Dashboard() {
   const {section} = useParams();
 
