@@ -7,6 +7,7 @@ import AllBooks from './AllBooks'
 import UserManagement from './UserManagement'
 import Catelogs from './Catelogs'
 import AddUser from './AddUser'
+import AddBook from './AddBook'
 
 
 function Dashboard() {
@@ -14,6 +15,7 @@ function Dashboard() {
 
   const sectionMap = {
     "dashboard":<ProvideForm/>,
+    "addbook":<AddBook/>,
     "provideform": <ProvideForm/>,
     "allbooks": <AllBooks/>,
     "usersmanagement": <UserManagement/>,

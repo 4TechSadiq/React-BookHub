@@ -23,6 +23,12 @@ function SideBar() {
                             <span class=" d-none d-sm-inline">Dashboard</span>
                         </Link>
                     </li>
+                    <li className='nav-item'>
+                    
+                        <Link to='/addbook' class="nav-link btn text-secondary align-middle px-0">
+                            <span class=" d-none d-sm-inline">Add Book</span>
+                        </Link>
+                    </li>
                     <li class="nav-item">
                         {/* <a href="#" class="nav-link btn text-secondary align-middle px-0">
                             <i class="fs-4 bi-house"></i> <span class="ms-1 d-none d-sm-inline">Dashboard</span>

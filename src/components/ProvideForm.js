@@ -1,12 +1,53 @@
+import { useState } from "react"
 import React from 'react'
+import axios from "axios"
+import { toast } from "react-toastify"
+
 
 function ProvideForm() {
+    const [formdata, setFormData] = useState({})
+
+  const handleInput = (e) => {
+    const{name,value} = e.target;
+    setFormData({
+      ...formdata,
+      [name]:value,
+    })
+  }
+  console.log(formdata)
+
+  const HandleSubmit = async(e) => {
+    e.preventDefault();
+    try{
+      const response = await axios.post("http://127.0.0.1:8000/create-book/",formdata,
+        {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          }
+        }
+      )
+      if (response.status === 201){
+        toast.success("data added",
+          {
+            position: toast.POSITION.TOP_CENTER,
+            theme: 'colored'
+          }
+        )
+      }
+    }
+    catch(error){
+      console.log(error.response.data)
+    }
+
+  }
+
   return (
     <>
     <div className='container p-4 ms-3 shadow rounded-5 mt-5 mb-5'>
         <h2 className='text-center mb-3'>Provide Form</h2>
         <div className='container'>
-            <form>
+            <form onSubmit={HandleSubmit}>
                 <table className='table table-striped table-hover'>
                     <thead>
                         <tr>
@@ -19,7 +60,7 @@ function ProvideForm() {
                     <tbody>
                         <tr>
                             <td>
-                                <input className='form-control'></input>
+                                <input name="" className='form-control'></input>
                             </td>
                             <td>
                                 <input className='form-control'></input>

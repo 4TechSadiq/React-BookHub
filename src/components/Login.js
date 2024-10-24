@@ -1,4 +1,6 @@
 import React, { useState } from 'react'
+import { toast } from 'react-toastify';
+import axios from 'axios';
 
 function Login() {
   const [formdata, setFormData] = useState({})
@@ -15,7 +17,25 @@ function Login() {
   const HandleSubmit = async(e) => {
     e.preventDefault();
     try{
-      const response = await axios.post()
+      const response = await axios.post("http://127.0.0.1:8000/create-book/",formdata,
+        {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          }
+        }
+      )
+      if (response.status === 201){
+        toast.success("data added",
+          {
+            position: toast.POSITION.TOP_CENTER,
+            theme: 'colored'
+          }
+        )
+      }
+    }
+    catch(error){
+      console.log(error.response.data)
     }
 
   }
