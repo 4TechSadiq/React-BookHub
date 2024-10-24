@@ -4,7 +4,6 @@ function Login() {
   const [formdata, setFormData] = useState({})
 
   const handleInput = (e) => {
-    e.preventDefault();
     const{name,value} = e.target;
     setFormData({
       ...formdata,
@@ -12,6 +11,14 @@ function Login() {
     })
   }
   console.log(formdata)
+
+  const HandleSubmit = async(e) => {
+    e.preventDefault();
+    try{
+      const response = await axios.post()
+    }
+
+  }
 
 
   return (
