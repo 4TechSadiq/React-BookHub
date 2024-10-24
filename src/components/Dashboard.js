@@ -12,7 +12,7 @@ import AddBook from './AddBook'
 
 function Dashboard() {
   const {section} = useParams();
-
+  
   const sectionMap = {
     "dashboard":<ProvideForm/>,
     "addbook":<AddBook/>,
