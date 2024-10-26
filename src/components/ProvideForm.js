@@ -27,8 +27,17 @@ function ProvideForm() {
           }
         }
       )
+      console.log(response.status)
       if (response.status === 201){
         toast.success("data added",
+          {
+            position: 'top-center',
+            theme: 'colored'
+          }
+        )
+      }
+      else{
+        toast.error("data not added",
           {
             position: 'top-center',
             theme: 'colored'
@@ -51,7 +60,7 @@ function ProvideForm() {
     .catch((error)=>{
       console.log(error)
     })
-  },[book])
+  },[])
 
   const [user, setUser] = useState([])
   useEffect(()=>{
@@ -62,7 +71,21 @@ function ProvideForm() {
     .catch((error)=>{
       console.log(error)
     })
-  },[user])
+  },[])
+
+  // const Datenow = () => {
+  //   const date = new Date();
+  //   let day = date.getDate();
+  //   let month = date.getMonth() + 1;
+  //   let year = date.getFullYear();
+    
+  //   // This arrangement can be altered based on how we want the date's format to appear.
+  //   let currentDate = `${day}-${month}-${year}`;
+  //   return currentDate
+  // }
+
+  // let a = Datenow();
+  // console.log(a)
 
   return (
     <>
@@ -81,22 +104,22 @@ function ProvideForm() {
                     <tbody>
                         <tr>
                             <td>
-                                <select class="form-control" name="" id="">
+                                <select onChange={handleInput} class="form-control" name="user" id="">
+                                  <option>Select User</option>
                                   {
                                     user.map((item)=>(
-                                      <option value={item.user_ID}>{item.user_ID}</option>
+                                      <option value={item.id}>{item.user_ID}</option>
                                     ))
                                   }
                                 </select>
                             </td>
                             <td>
-                              <select class="form-control" name="" id="">
-                                {
-                                  book.map((item)=>(
-                                    <option value={item.book_name}>{item.book_name}</option>
-                                  ))
-                                }
-                              </select>
+                            <select multiple onChange={handleInput} class="form-control" name="book" id="">
+                              <option>Select Book</option>
+                              {book.map((item) => (
+                                <option value={item.id}>{item.book_name}</option>
+                              ))}
+                            </select>
                             </td>
                             <td>
                                 <input type="date" class="form-control" name="return_date" onChange={handleInput}></input>
