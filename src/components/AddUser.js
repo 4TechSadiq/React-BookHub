@@ -73,7 +73,8 @@ return (
                         <label htmlFor='institution' className='form-label'>Institution</label>
                         <input onChange={handleInput} type='text' className='form-control' name='institution' id='institution'></input>
                     </div>
-                    <button className='btn btn-success'>Submit</button>
+                    <button type='reset' className='btn btn-warning '>Clear</button>
+                    <button type='submit' className='btn btn-success ms-2'>Submit</button>
                 </form>
             </div>
         </div>
