@@ -2,6 +2,10 @@ import React from 'react'
 import axios from 'axios';
 import { useState } from 'react';
 import { toast } from 'react-toastify';
+// import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+    
+
 
 function AddBook() {
     const [formdata, setFormData] = useState({})
@@ -28,6 +32,14 @@ function AddBook() {
       )
       if (response.status === 201){
         toast.success("data added",
+          {
+            position: toast.POSITION.TOP_CENTER,
+            theme: 'colored'
+          }
+        )
+      }
+      else{
+        toast.error("data not added",
           {
             position: toast.POSITION.TOP_CENTER,
             theme: 'colored'
