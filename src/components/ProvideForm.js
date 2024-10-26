@@ -1,4 +1,4 @@
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import React from 'react'
 import axios from "axios"
 import { toast } from "react-toastify"
@@ -19,7 +19,7 @@ function ProvideForm() {
   const HandleSubmit = async(e) => {
     e.preventDefault();
     try{
-      const response = await axios.post("http://127.0.0.1:8000/create-book/",formdata,
+      const response = await axios.post("http://127.0.0.1:8000/provide-book/",formdata,
         {
           method: 'POST',
           headers: {
@@ -30,7 +30,7 @@ function ProvideForm() {
       if (response.status === 201){
         toast.success("data added",
           {
-            position: toast.POSITION.TOP_CENTER,
+            position: 'top-center',
             theme: 'colored'
           }
         )
@@ -41,6 +41,28 @@ function ProvideForm() {
     }
 
   }
+  
+  const [book, setBook] = useState([])
+  useEffect(()=>{
+    axios.get("http://127.0.0.1:8000/list-book/")
+    .then((response)=>{
+      setBook(response.data)
+    })
+    .catch((error)=>{
+      console.log(error)
+    })
+  },[book])
+
+  const [user, setUser] = useState([])
+  useEffect(()=>{
+    axios.get("http://127.0.0.1:8000/list-student/")
+    .then((response)=>{
+      setUser(response.data)
+    })
+    .catch((error)=>{
+      console.log(error)
+    })
+  },[user])
 
   return (
     <>
@@ -53,23 +75,31 @@ function ProvideForm() {
                         <tr>
                             <th>UserID</th>
                             <th>Book Name</th>
-                            <th>Author</th>
-                            <th>ISB Number</th>
+                            <th>Return Date</th>
                         </tr>
                     </thead>
                     <tbody>
                         <tr>
                             <td>
-                                <input name="" className='form-control'></input>
+                                <select class="form-control" name="" id="">
+                                  {
+                                    user.map((item)=>(
+                                      <option value={item.user_ID}>{item.user_ID}</option>
+                                    ))
+                                  }
+                                </select>
                             </td>
                             <td>
-                                <input className='form-control'></input>
+                              <select class="form-control" name="" id="">
+                                {
+                                  book.map((item)=>(
+                                    <option value={item.book_name}>{item.book_name}</option>
+                                  ))
+                                }
+                              </select>
                             </td>
                             <td>
-                                <input className='form-control'></input>
-                            </td>
-                            <td>
-                                <input className='form-control'></input>
+                                <input type="date" class="form-control" name="return_date" onChange={handleInput}></input>
                             </td>
                         </tr>
                     </tbody>
