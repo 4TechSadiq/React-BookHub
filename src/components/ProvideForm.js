@@ -113,7 +113,7 @@ function ProvideForm() {
         // Submit the book for the selected student
         const response = await axios.post("http://127.0.0.1:8000/provide/", {
           student: selectedStudent.id,   // Add the student ID to the API call
-          book: selectedBook.id,
+          book: selectedBook.id,         // Pass the book ID
           return_date: returnDate,
         });
 
@@ -268,7 +268,7 @@ function ProvideForm() {
                 <table className="table table-striped">
                   <thead>
                     <tr>
-                      <th>Book Name</th>
+                      <th>Book ID</th>  {/* Change to display Book ID */}
                       <th>Approved Date</th>
                       <th>Return Date</th>
                     </tr>
@@ -276,7 +276,7 @@ function ProvideForm() {
                   <tbody>
                     {history.map((record) => (
                       <tr key={record.id}>
-                        <td>{record.book_name}</td>
+                        <td>{record.book_name}</td>  {/* Display Book ID */}
                         <td>{new Date(record.approved_date).toLocaleDateString()}</td>
                         <td>{new Date(record.return_date).toLocaleDateString()}</td>
                       </tr>
