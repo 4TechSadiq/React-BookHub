@@ -9,88 +9,24 @@ import { library, text } from "@fortawesome/fontawesome-svg-core"
 library.add(faMagnifyingGlass)
 
 function ProvideForm() {
-    const [formdata, setFormData] = useState({})
+  const [data,setData] = useState([])
 
-  const handleInput = (e) => {
-    const{name,value} = e.target;
-    setFormData({
-      ...formdata,
-      [name]:value,
-    })
-  }
-  console.log(formdata)
-
-  const HandleSubmit = async(e) => {
-    e.preventDefault();
-    try{
-      const response = await axios.post("http://127.0.0.1:8000/provide-book/",formdata,
-        {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          }
-        }
-      )
-      console.log(response.status)
-      if (response.status === 201){
-        toast.success("data added",
-          {
-            position: 'top-center',
-            theme: 'colored'
-          }
-        )
+  useEffect(()=>{
+    const fetchData = async () =>{
+      try{
+        const response = await axios.get("http://127.0.0.1:8000/list-student/");
+        setData(response.data);
       }
-      else{
-        toast.error("data not added",
-          {
-            position: 'top-center',
-            theme: 'colored'
-          }
-        )
+      catch(error){
+        console.log("error", error)
       }
     }
-    catch(error){
-      console.log(error.response.data)
-    }
+  })
 
-  }
-  
-  const [book, setBook] = useState([])
-  useEffect(()=>{
-    axios.get("http://127.0.0.1:8000/list-book/")
-    .then((response)=>{
-      setBook(response.data)
-    })
-    .catch((error)=>{
-      console.log(error)
-    })
-  },[])
-
-  const [user, setUser] = useState([])
-  useEffect(()=>{
-    axios.get("http://127.0.0.1:8000/list-student/")
-    .then((response)=>{
-      setUser(response.data)
-    })
-    .catch((error)=>{
-      console.log(error)
-    })
-  },[])
-
-  // const Datenow = () => {
-  //   const date = new Date();
-  //   let day = date.getDate();
-  //   let month = date.getMonth() + 1;
-  //   let year = date.getFullYear();
-    
-  //   // This arrangement can be altered based on how we want the date's format to appear.
-  //   let currentDate = `${day}-${month}-${year}`;
-  //   return currentDate
-  // }
-
-  // let a = Datenow();
-  // console.log(a)
-
+  const [searchItem, setSearchItem] = useState('')
+  const filterData = data.filter((item)=>
+    item.emp_name.toLowerCase().includes(searchItem.toLocaleLowerCase())
+  )
   return (
     <>
     <div className='col-10 p-4 ms-3 shadow rounded mt-5 mb-5'>
@@ -141,13 +77,17 @@ function ProvideForm() {
       <h2>Enter Book</h2>
       </div>
       <div className="container p-3">
-        <form>
-          <div className="mb-2">
+        <form className="d-flex gap-3">
+          <div className="col-4">
             <label className="form-label">Enter Book Name</label>
-            <div className="d-flex gap-2">
-              <input className="form-control"></input>
-              <button className="btn btn-warning">Add</button>
-            </div>
+            <input className="form-control"></input>
+          </div>
+          <div className="col-4">
+            <label className="form-label">Enter Return Date</label>
+            <input type="date" className="form-control"></input>
+          </div>
+          <div className="col-4 d-flex align-items-end">
+            <button className="btn btn-warning">Add</button>
           </div>
         </form>
       </div>
