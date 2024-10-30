@@ -31,7 +31,8 @@ function Dashboard() {
     <>
       <NavBar/>
       <div className='container-fluid d-flex'>
-        <div className='col-lg-2'>
+        <div className='col-lg-2'></div>
+        <div className='col-lg-2 position-fixed'>
           <SideBar/>
         </div>
         <div className='col-lg-10'>

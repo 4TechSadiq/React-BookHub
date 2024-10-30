@@ -2,7 +2,11 @@ import { useEffect, useState } from "react"
 import React from 'react'
 import axios from "axios"
 import { toast } from "react-toastify"
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
+import { faMagnifyingGlass } from "@fortawesome/free-solid-svg-icons"
+import { library, text } from "@fortawesome/fontawesome-svg-core"
 
+library.add(faMagnifyingGlass)
 
 function ProvideForm() {
     const [formdata, setFormData] = useState({})
@@ -89,52 +93,93 @@ function ProvideForm() {
 
   return (
     <>
-    <div className='container p-4 ms-3 shadow rounded-5 mt-5 mb-5'>
+    <div className='col-10 p-4 ms-3 shadow rounded mt-5 mb-5'>
         <h2 className='text-center mb-3'>Provide Form</h2>
         <div className='container'>
-            <form onSubmit={HandleSubmit}>
-                <table className='table table-striped table-hover'>
-                    <thead>
-                        <tr>
-                            <th>UserID</th>
-                            <th>Book Name</th>
-                            <th>Return Date</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td>
-                                <select onChange={handleInput} class="form-control" name="user" id="">
-                                  <option>Select User</option>
-                                  {
-                                    user.map((item)=>(
-                                      <option value={item.id}>{item.user_ID}</option>
-                                    ))
-                                  }
-                                </select>
-                            </td>
-                            <td>
-                            <select multiple onChange={handleInput} class="form-control" name="book" id="">
-                              <option>Select Book</option>
-                              {book.map((item) => (
-                                <option value={item.id}>{item.book_name}</option>
-                              ))}
-                            </select>
-                            </td>
-                            <td>
-                                <input type="date" class="form-control" name="return_date" onChange={handleInput}></input>
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
-                <div className='mb-3 d-flex justify-content-center'>
-                <button className='mb-4 btn btn-dark '>Submit</button>
+            <form class="d-flex" onSubmit={HandleSubmit}>
+                <div class="col-8 mb-2">
+                  <label class="form-label" for="">Enter Student ID</label>
+                  <div class="col-12 d-flex">
+                    <div class="container">
+                      <input type="text" class="form-control"></input>
+                    </div>
+                    <button className='mb-4 btn shadow d-flex align-items-center gap-2'>
+                    <FontAwesomeIcon icon={faMagnifyingGlass} />
+                    Search
+                </button> 
                 </div>
+                </div>
+
             </form>
-                
-
         </div>
+    </div>
 
+    <div class="col-10 ms-3 shadow rounded">
+      <div className="container p-4">
+      <h2 >Student Details</h2>
+      </div>
+      <div className="container p-4">
+        <table className="table table-strip">
+          <thead>
+            <tr>
+              <th>UserID</th>
+              <th>Name</th>
+              <th>Institution</th>
+            </tr>
+          </thead>
+          <tbody>
+            <td>Name</td>
+            <td>Name</td>
+            <td>Name</td>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div className="col-10 ms-3 shadow rounded mt-4">
+      <div className="container p-3">
+      <h2>Enter Book</h2>
+      </div>
+      <div className="container p-3">
+        <form>
+          <div className="mb-2">
+            <label className="form-label">Enter Book Name</label>
+            <div className="d-flex gap-2">
+              <input className="form-control"></input>
+              <button className="btn btn-warning">Add</button>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <div class="col-10 ms-3 mt-4 shadow rounded">
+      <div className="container p-4">
+      <h2 >Book History</h2>
+      </div>
+      <div className="container p-4">
+        <table className="table table-strip">
+          <thead>
+            <tr>
+              <th>Book Name</th>
+              <th>isbnumber</th>
+              <th>Approved Date</th>
+              <th>Return Date</th>
+              <th>Action</th>
+            </tr>
+          </thead>
+          <tbody>
+            <td>Name</td>
+            <td>Name</td>
+            <td>Name</td>
+            <td>Name</td>
+            <td className="d-flex gap-2">
+              <button className="btn btn-primary">Close</button>
+              <button className="btn btn-warning">Remove</button>
+            </td>
+          </tbody>
+        </table>
+      </div>
     </div>
     </>
   )
