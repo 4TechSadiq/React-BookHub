@@ -1,19 +1,43 @@
 import { useEffect, useState } from "react";
-import React from 'react';
 import axios from "axios";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faMagnifyingGlass } from "@fortawesome/free-solid-svg-icons";
+import { toast, ToastContainer } from "react-toastify";
 
 function ProvideForm() {
   const [data, setData] = useState([]);
+  const [book, setBook] = useState([]);
   const [searchItem, setSearchItem] = useState('');
   const [filteredStudents, setFilteredStudents] = useState([]);
   const [selectedStudent, setSelectedStudent] = useState(null);
   const [userFound, setUserFound] = useState(false);
 
-  // Fetch students data on component mount
+  const [searchBook, setSearchBook] = useState('');
+  const [filterBook, setFilterBook] = useState([]);
+  const [selectedBook, setSelectedBook] = useState(null);
+  const [returnDate, setReturnDate] = useState('');
+  const [history, setHistory] = useState([]);  // State for storing book history
+
+  // Book search functions
+  const bookSearchChange = (e) => {
+    const searchBookValue = e.target.value;
+    setSearchBook(searchBookValue);
+
+    const bookFiltered = book.filter((Book) =>
+      Book.book_name.toLowerCase().includes(searchBookValue.toLowerCase())
+    );
+    setFilterBook(bookFiltered);
+  };
+
+  const handleSelectBook = (Book) => {
+    setSelectedBook(Book);
+    setSearchBook(Book.book_name);
+    setFilterBook([]); // Hide suggestion list
+  };
+
+  // Fetch students and books data on component mount
   useEffect(() => {
-    const fetchData = async () => {
+    const fetchStudents = async () => {
       try {
         const response = await axios.get("http://127.0.0.1:8000/list-student/");
         setData(response.data);
@@ -21,41 +45,102 @@ function ProvideForm() {
         console.log("error", error);
       }
     };
-    fetchData();
+
+    const fetchBooks = async () => {
+      try {
+        const response = await axios.get("http://127.0.0.1:8000/list-book/");
+        setBook(response.data);
+      } catch (error) {
+        console.log("error", error);
+      }
+    };
+
+    fetchStudents();
+    fetchBooks();
   }, []);
 
-  // Function to handle input change for searching user ID
+  // Handle student search
   const handleSearchChange = (e) => {
     const searchValue = e.target.value;
     setSearchItem(searchValue);
     
-    // Filter student list based on user ID
     const filtered = data.filter((student) =>
       student.user_ID.toLowerCase().includes(searchValue.toLowerCase())
     );
     setFilteredStudents(filtered);
   };
 
-  // Function to handle selection of a student
   const handleSelectStudent = (student) => {
     setSelectedStudent(student);
     setSearchItem(student.user_ID);
-    setFilteredStudents([]); // Hide suggestion list after selection
+    setFilteredStudents([]);
+    fetchHistory(student.id);  // Fetch history when a student is selected
   };
 
-  // Function to handle form submission
+  // Fetch the history of provided books for the selected student
+  const fetchHistory = async (studentId) => {
+    try {
+      const response = await axios.get(`http://127.0.0.1:8000/provide-book/?student=${studentId}`);
+      setHistory(response.data);
+    } catch (error) {
+      console.error("Error fetching history", error);
+    }
+  };
+
   const handleSubmit = (e) => {
     e.preventDefault();
     if (selectedStudent) {
       setUserFound(true);
+      toast.success("User Found", {
+        position: 'top-center',
+        theme: 'colored'
+      });
     } else {
-      setUserFound(false); // Reset if no valid student is selected
-      alert("No user selected. Please select a valid user.");
+      setUserFound(false);
+      toast.error("User not Found, Enter Valid User", {
+        position: 'top-center',
+        theme: 'colored'
+      });
+    }
+  };
+
+  // Handle adding a book with a return date
+  const handleAddBook = async (e) => {
+    e.preventDefault();
+
+    if (selectedStudent && selectedBook && returnDate) {
+      try {
+        // Submit the book for the selected student
+        const response = await axios.post("http://127.0.0.1:8000/provide/", {
+          student: selectedStudent.id,   // Add the student ID to the API call
+          book: selectedBook.id,
+          return_date: returnDate,
+        });
+
+        toast.success("Book added successfully!", {
+          position: 'top-center',
+          theme: 'colored'
+        });
+
+        fetchHistory(selectedStudent.id);  // Fetch updated history after adding book
+      } catch (error) {
+        console.error("Error adding book", error);
+        toast.error("Failed to add book", {
+          position: 'top-center',
+          theme: 'colored'
+        });
+      }
+    } else {
+      toast.error("Please select a student, book, and return date", {
+        position: 'top-center',
+        theme: 'colored'
+      });
     }
   };
 
   return (
     <>
+      <ToastContainer />
       {/* Provide Form */}
       <div className="col-10 p-4 ms-3 shadow rounded mt-5 mb-5">
         <h2 className="text-center mb-3">Provide Form</h2>
@@ -72,7 +157,6 @@ function ProvideForm() {
                     value={searchItem}
                     onChange={handleSearchChange}
                   />
-                  
                   {/* Dropdown for suggestions */}
                   {filteredStudents.length > 0 && (
                     <ul className="list-group position-absolute mt-1">
@@ -99,7 +183,7 @@ function ProvideForm() {
         </div>
       </div>
 
-      {/* Student details and other sections become visible only if user is found */}
+      {/* Show student details and book form if a user is found */}
       {userFound && (
         <>
           {/* Student Details */}
@@ -133,51 +217,75 @@ function ProvideForm() {
               <h2>Enter Book</h2>
             </div>
             <div className="container p-3">
-              <form className="d-flex gap-3">
+              <form className="d-flex gap-3" onSubmit={handleAddBook}>
                 <div className="col-4">
                   <label className="form-label">Enter Book Name</label>
-                  <input className="form-control" placeholder="Book Name"></input>
+                  <input
+                    className="form-control"
+                    placeholder="Book Name"
+                    value={searchBook}
+                    onChange={bookSearchChange}
+                  />
+                  {/* Dropdown for book suggestions */}
+                  {filterBook.length > 0 && (
+                    <ul className="list-group position-absolute mt-1">
+                      {filterBook.map((book) => (
+                        <li
+                          key={book.id}
+                          className="list-group-item list-group-item-action"
+                          onClick={() => handleSelectBook(book)}
+                          style={{ cursor: "pointer" }}
+                        >
+                          {book.book_name}
+                        </li>
+                      ))}
+                    </ul>
+                  )}
                 </div>
                 <div className="col-4">
                   <label className="form-label">Enter Return Date</label>
-                  <input type="date" className="form-control"></input>
+                  <input
+                    type="date"
+                    className="form-control"
+                    value={returnDate}
+                    onChange={(e) => setReturnDate(e.target.value)}
+                  />
                 </div>
                 <div className="col-4 d-flex align-items-end">
-                  <button className="btn btn-warning">Add</button>
+                  <button className="btn btn-warning" type="submit">Add Book</button>
                 </div>
               </form>
             </div>
           </div>
 
-          {/* Book History */}
-          <div className="col-10 ms-3 mt-4 shadow rounded">
-            <div className="container p-4">
-              <h2>Book History</h2>
+          {/* Book History Section */}
+          <div className="col-10 ms-3 shadow rounded mt-4">
+            <div className="container p-3">
+              <h2>Previously Provided Books</h2>
             </div>
-            <div className="container p-4">
-              <table className="table table-strip">
-                <thead>
-                  <tr>
-                    <th>Book Name</th>
-                    <th>ISBN Number</th>
-                    <th>Approved Date</th>
-                    <th>Return Date</th>
-                    <th>Action</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr>
-                    <td>Book 1</td>
-                    <td>12345</td>
-                    <td>2024-10-01</td>
-                    <td>2024-10-10</td>
-                    <td className="d-flex gap-2">
-                      <button className="btn btn-primary">Close</button>
-                      <button className="btn btn-warning">Remove</button>
-                    </td>
-                  </tr>
-                </tbody>
-              </table>
+            <div className="container p-3">
+              {history.length > 0 ? (
+                <table className="table table-striped">
+                  <thead>
+                    <tr>
+                      <th>Book Name</th>
+                      <th>Approved Date</th>
+                      <th>Return Date</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {history.map((record) => (
+                      <tr key={record.id}>
+                        <td>{record.book_name}</td>
+                        <td>{new Date(record.approved_date).toLocaleDateString()}</td>
+                        <td>{new Date(record.return_date).toLocaleDateString()}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              ) : (
+                <p>No previous records found.</p>
+              )}
             </div>
           </div>
         </>
