@@ -110,22 +110,32 @@ function ProvideForm() {
 
     if (selectedStudent && selectedBook && returnDate) {
       try {
-        // Submit the book for the selected student
-        const response = await axios.post("http://127.0.0.1:8000/provide/", {
-          student: selectedStudent.id,   // Add the student ID to the API call
-          book: selectedBook.id,         // Pass the book ID
-          return_date: returnDate,
+        // Retrieve the current provide data
+        const provideId = 4; // Example ID, replace with the relevant ID
+        const provideResponse = await axios.put(`http://127.0.0.1:8000/update-provide/${provideId}/`);
+        console.log("Provide Data", provideResponse.data);
+
+        // Append new book ID to the existing list
+        const updatedBooks = [...provideResponse.data.book, selectedBook.id];
+        console.log("Updated Books", updatedBooks);
+
+        // Submit updated provide data
+        await axios.put(`http://127.0.0.1:8000/update-provide/${provideId}/`, {
+          student: selectedStudent.id,
+          book: updatedBooks,
+          approved_date: provideResponse.data.approved_date,
+          return_date: returnDate, // Or provideResponse.data.return_date if it should remain unchanged
         });
 
-        toast.success("Book added successfully!", {
+        toast.success("Book updated successfully!", {
           position: 'top-center',
           theme: 'colored'
         });
 
         fetchHistory(selectedStudent.id);  // Fetch updated history after adding book
       } catch (error) {
-        console.error("Error adding book", error);
-        toast.error("Failed to add book", {
+        console.error("Error updating book", error);
+        toast.error("Failed to update book", {
           position: 'top-center',
           theme: 'colored'
         });
@@ -251,14 +261,12 @@ function ProvideForm() {
                     onChange={(e) => setReturnDate(e.target.value)}
                   />
                 </div>
-                <div className="col-4 d-flex align-items-end">
-                  <button className="btn btn-warning" type="submit">Add Book</button>
-                </div>
+                <button className="mb-4 btn shadow">Add Book</button>
               </form>
             </div>
           </div>
 
-          {/* Book History Section */}
+          {/* Display Previously Provided Books */}
           <div className="col-10 ms-3 shadow rounded mt-4">
             <div className="container p-3">
               <h2>Previously Provided Books</h2>
@@ -268,7 +276,7 @@ function ProvideForm() {
                 <table className="table table-striped">
                   <thead>
                     <tr>
-                      <th>Book ID</th>  {/* Change to display Book ID */}
+                      <th>Book ID</th>
                       <th>Approved Date</th>
                       <th>Return Date</th>
                     </tr>
@@ -276,7 +284,7 @@ function ProvideForm() {
                   <tbody>
                     {history.map((record) => (
                       <tr key={record.id}>
-                        <td>{record.book_name}</td>  {/* Display Book ID */}
+                        <td>{record.book}</td>
                         <td>{new Date(record.approved_date).toLocaleDateString()}</td>
                         <td>{new Date(record.return_date).toLocaleDateString()}</td>
                       </tr>
