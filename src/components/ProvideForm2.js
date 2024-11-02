@@ -9,12 +9,12 @@ function ProvideForm() {
   const [searchUser, setSearchUser] = useState([]);
   const [searchItem, setSearchItem] = useState('');
   const [selectedStudent, setSelectedStudent] = useState(null);
-  const [searchBook, setSearchBook] = useState([]); // New state for books
-  const [searchBookItem, setSearchBookItem] = useState(''); // State for book search input
-  const [selectedBook, setSelectedBook] = useState(null); // Store selected book details
+  const [searchBook, setSearchBook] = useState([]);
+  const [searchBookItem, setSearchBookItem] = useState('');
+  const [selectedBook, setSelectedBook] = useState(null);
+  const [transactionHistory, setTransactionHistory] = useState([]); // Transaction history state
 
   useEffect(() => {
-    // Fetch students
     const fetchUsers = async () => {
       try {
         const response = await axios.get("http://127.0.0.1:8000/list-student/");
@@ -24,7 +24,6 @@ function ProvideForm() {
       }
     };
 
-    // Fetch books
     const fetchBooks = async () => {
       try {
         const response = await axios.get("http://127.0.0.1:8000/list-book/");
@@ -56,21 +55,19 @@ function ProvideForm() {
     });
   };
 
-  console.log(formData);
-
   const handleSelectStudent = (student) => {
     setSelectedStudent(student);
     setSearchItem(student.user_ID);
     setFormData({ ...formData, student: student.id });
+    fetchTransactionHistory(student.id); // Fetch transaction history for selected student
   };
 
   const handleSelectBook = (book) => {
     setSelectedBook(book);
-    setSearchBookItem(book.book_name); // Set the search input to the selected book name
+    setSearchBookItem(book.book_name);
     setFormData({
       ...formData,
       book: book.id,
-      //book_name: book.book_name,
     });
   };
 
@@ -96,6 +93,15 @@ function ProvideForm() {
       }
     } catch (error) {
       console.log(error.response.data);
+    }
+  };
+
+  const fetchTransactionHistory = async (studentId) => {
+    try {
+      const response = await axios.get(`http://127.0.0.1:8000/list-provide/?student=${studentId}`);
+      setTransactionHistory(response.data);
+    } catch (error) {
+      console.log("Error fetching transaction history:", error);
     }
   };
 
@@ -214,8 +220,38 @@ function ProvideForm() {
                     className="form-control"
                   />
                 </div>
-                <button className="mb-4 btn shadow">Add Book</button>
+                <div className="container mt-4">
+                  <button className="mb-4 mt-2 btn shadow">Add Book</button>
+                  <button type="reset" className="mb-4 mt-2 btn shadow">Clear</button>
+                </div>
               </form>
+            </div>
+          </div>
+
+          {/* Book Transaction History */}
+          <div className="container shadow rounded mt-5">
+            <div className="container">
+              <h2>Book History</h2>
+            </div>
+            <div className="container p-3">
+              <table className="table">
+                <thead>
+                  <tr>
+                    <th>Book Name</th>
+                    <th>Issue Date</th>
+                    <th>Return Date</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {transactionHistory.map((transaction) => (
+                    <tr key={transaction.id}>
+                      <td>{transaction.book_name}</td>
+                      <td>{transaction.approved_date}</td>
+                      <td>{transaction.return_date}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
             </div>
           </div>
         </>
