@@ -7,17 +7,25 @@ import { toast, ToastContainer } from "react-toastify";
 function ProvideForm() {
 
     const [formData, setFormData] = useState({});
-    const [user, setUser] = useState([]);
+    const [searchUser, setSearchUser] = useState([]);
 
     useEffect(()=>{
-        axios.get("http://127.0.0.1:8000/list-student/")
-        .then((response)=>{
-            setUser(response.data)
-        })
-        .catch((error)=>{
-            console.log(error)
-        })
-    },[])
+        const fetchUsers = async () =>{
+            try{
+                const response = await axios.get("http://127.0.0.1:8000/list-user/");
+                setSearchUser(response.data);
+            }catch(error){
+                console.log(error)
+            }
+        }
+
+        fetchUsers();
+    },[]);
+
+    const [searchItem, setSearchItem] = useState('');
+    const filterData = searchUser.filter((item)=>
+        item.student_name.toLowerCase().includes(searchItem.toLowerCase())
+    )
 
     const handleInput = (e) => {
         const {name, value} = e.target;
@@ -62,7 +70,7 @@ function ProvideForm() {
     }
   return (
     <>
-      <ToastContainer />
+      <ToastContainer/>
       {/* Provide Form */}
       <div className="col-10 p-4 ms-3 shadow rounded mt-5 mb-5">
         <h2 className="text-center mb-3">Provide Form</h2>
@@ -73,6 +81,8 @@ function ProvideForm() {
               <div className="col-12 d-flex">
                 <div className="container position-relative">
                   <input
+                  value={searchItem}
+                    onChange={(e)=>setSearchItem(e.target.value)}
                     className="form-control"
                     placeholder="Search for Student ID"
                     type="text"
@@ -84,6 +94,7 @@ function ProvideForm() {
                         <li
                           className="list-group-item list-group-item-action"
                         >
+                        
                         </li>
 
                     </ul>
