@@ -34,6 +34,7 @@ function ProvideForm() {
       [name]: value,
     });
   };
+  console.log(formData);
 
   const handleSelectStudent = (student) => {
     setSelectedStudent(student);
