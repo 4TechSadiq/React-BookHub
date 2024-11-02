@@ -284,7 +284,7 @@ function ProvideForm() {
                   <tbody>
                     {history.map((record) => (
                       <tr key={record.id}>
-                        <td>{record.book}</td>
+                        <td>{record.book.book_name}</td>
                         <td>{new Date(record.approved_date).toLocaleDateString()}</td>
                         <td>{new Date(record.return_date).toLocaleDateString()}</td>
                       </tr>
