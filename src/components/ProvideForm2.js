@@ -229,9 +229,9 @@ function ProvideForm() {
           </div>
 
           {/* Book Transaction History */}
-          <div className="container shadow rounded mt-5">
+          <div className="col-10 ms-3 shadow rounded-2 p-2 mb-4 mt-5">
             <div className="container">
-              <h2>Book History</h2>
+              <h2>Ongoing Book Records</h2>
             </div>
             <div className="container p-3">
               <table className="table">
@@ -240,6 +240,7 @@ function ProvideForm() {
                     <th>Book Name</th>
                     <th>Issue Date</th>
                     <th>Return Date</th>
+                    <th>Action</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -248,6 +249,9 @@ function ProvideForm() {
                       <td>{transaction.book_name}</td>
                       <td>{transaction.approved_date}</td>
                       <td>{transaction.return_date}</td>
+                      <td>
+                        <button className="btn btn-danger">Return</button>
+                      </td>
                     </tr>
                   ))}
                 </tbody>
