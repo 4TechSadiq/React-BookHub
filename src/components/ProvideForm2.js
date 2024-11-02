@@ -9,8 +9,12 @@ function ProvideForm() {
   const [searchUser, setSearchUser] = useState([]);
   const [searchItem, setSearchItem] = useState('');
   const [selectedStudent, setSelectedStudent] = useState(null);
+  const [searchBook, setSearchBook] = useState([]); // New state for books
+  const [searchBookItem, setSearchBookItem] = useState(''); // State for book search input
+  const [selectedBook, setSelectedBook] = useState(null); // Store selected book details
 
   useEffect(() => {
+    // Fetch students
     const fetchUsers = async () => {
       try {
         const response = await axios.get("http://127.0.0.1:8000/list-student/");
@@ -20,11 +24,28 @@ function ProvideForm() {
       }
     };
 
+    // Fetch books
+    const fetchBooks = async () => {
+      try {
+        const response = await axios.get("http://127.0.0.1:8000/list-book/");
+        setSearchBook(response.data);
+      } catch (error) {
+        console.log(error);
+      }
+    };
+
     fetchUsers();
+    fetchBooks();
   }, []);
 
+  // Filter students by ID
   const filterData = searchUser.filter((item) =>
     item.user_ID.toLowerCase().includes(searchItem.toLowerCase())
+  );
+
+  // Filter books by name
+  const filterBookData = searchBook.filter((item) =>
+    item.book_name.toLowerCase().includes(searchBookItem.toLowerCase())
   );
 
   const handleInput = (e) => {
@@ -34,12 +55,23 @@ function ProvideForm() {
       [name]: value,
     });
   };
+
   console.log(formData);
 
   const handleSelectStudent = (student) => {
     setSelectedStudent(student);
     setSearchItem(student.user_ID);
-    setFormData({ ...formData, student_id: student.id });
+    setFormData({ ...formData, student: student.id });
+  };
+
+  const handleSelectBook = (book) => {
+    setSelectedBook(book);
+    setSearchBookItem(book.book_name); // Set the search input to the selected book name
+    setFormData({
+      ...formData,
+      book: book.id,
+      //book_name: book.book_name,
+    });
   };
 
   const handleSubmit = async (e) => {
@@ -83,10 +115,10 @@ function ProvideForm() {
                     value={searchItem}
                     onChange={(e) => setSearchItem(e.target.value)}
                     className="form-control"
-                    placeholder="Search for Student Name"
+                    placeholder="Search for Student ID"
                     type="text"
                   />
-                  {/* Dropdown for suggestions */}
+                  {/* Dropdown for student suggestions */}
                   {searchItem && (
                     <ul className="list-group position-absolute mt-1 w-100">
                       {filterData.map((student) => (
@@ -149,14 +181,29 @@ function ProvideForm() {
             </div>
             <div className="container p-3">
               <form className="d-flex gap-3" onSubmit={handleSubmit}>
-                <div className="col-4">
+                <div className="col-4 position-relative">
                   <label className="form-label">Enter Book Name</label>
                   <input
                     className="form-control"
                     name="book_name"
-                    onChange={handleInput}
+                    value={searchBookItem}
+                    onChange={(e) => setSearchBookItem(e.target.value)}
                     placeholder="Book Name"
                   />
+                  {/* Dropdown for book suggestions */}
+                  {searchBookItem && (
+                    <ul className="list-group position-absolute mt-1 w-100">
+                      {filterBookData.map((book) => (
+                        <li
+                          key={book.id}
+                          onClick={() => handleSelectBook(book)}
+                          className="list-group-item list-group-item-action"
+                        >
+                          {book.book_name}
+                        </li>
+                      ))}
+                    </ul>
+                  )}
                 </div>
                 <div className="col-4">
                   <label className="form-label">Enter Return Date</label>
