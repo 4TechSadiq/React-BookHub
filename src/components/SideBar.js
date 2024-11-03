@@ -1,6 +1,7 @@
 import React from 'react'
 import { Link } from 'react-router-dom'
-
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faMagnifyingGlass } from "@fortawesome/free-solid-svg-icons";
 
 
 
@@ -17,10 +18,14 @@ function SideBar() {
                 
                 
                 <ul class="nav nav-pills flex-column mb-sm-auto mb-0 align-items-center align-items-sm-start" id="menu">
-                    <li className='nav-item'>
-                    
+                    <li  className='nav-item d-flex'>
                         <Link to='/' class="nav-link btn text-secondary align-middle px-0">
                             <span class=" d-none d-sm-inline">Dashboard</span>
+                        </Link>
+                    </li>
+                    <li>
+                        <Link to='/adduser' class="nav-link btn text-secondary align-middle px-0">
+                            <i class="fs-4 bi-house"></i> <span class="ms-1 d-none d-sm-inline">Add User</span>
                         </Link>
                     </li>
                     <li className='nav-item'>
@@ -56,11 +61,7 @@ function SideBar() {
                             <i class="fs-4 bi-house"></i> <span class="ms-1 d-none d-sm-inline">Catelog</span>
                         </Link>
                     </li>
-                    <li>
-                    <Link to='/adduser' class="nav-link btn text-secondary align-middle px-0">
-                            <i class="fs-4 bi-house"></i> <span class="ms-1 d-none d-sm-inline">Add User</span>
-                        </Link>
-                    </li>
+                    
                 </ul>
                 <hr></hr>
                 <div class="dropdown pb-4">

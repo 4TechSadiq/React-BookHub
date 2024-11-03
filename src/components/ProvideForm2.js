@@ -280,7 +280,7 @@ function ProvideForm() {
                       <th scope="row">{index + 1}</th>
                       <td>{item.book}</td>
                       <td>{item.approved_date}</td>
-                      <td>{item.return_date}</td>
+                      <td className="text-danger">{item.return_date}</td>
                       <td>
                         <button
                           className="btn btn-danger"

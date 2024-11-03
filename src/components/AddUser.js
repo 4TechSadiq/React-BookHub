@@ -66,6 +66,7 @@ function AddUser() {
                                 value={formdata.user_ID}
                                 readOnly
                             />
+                            <p className='text-danger'>USERID IS GENERATED AUTOMATICALLY!!!</p>
                         </div>
                         <div className='mb-3'>
                             <label htmlFor='userName' className='form-label'>User Name</label>
