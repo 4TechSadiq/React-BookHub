@@ -105,6 +105,15 @@ function ProvideForm() {
     }
   };
 
+  const handleProvideDelete=((id)=>{
+    fetch(`http://127.0.0.1:8000/delete-provide/${id}/`,
+        {method:"DELETE"}
+    )
+    .then(()=>{
+        console.log("deleted")
+    })
+})
+
   return (
     <>
       <ToastContainer />
@@ -250,7 +259,7 @@ function ProvideForm() {
                       <td>{transaction.approved_date}</td>
                       <td>{transaction.return_date}</td>
                       <td>
-                        <button className="btn btn-danger">Return</button>
+                        <button className="btn btn-danger" onClick={()=>{handleProvideDelete(transaction.id)}}>Return</button>
                       </td>
                     </tr>
                   ))}
