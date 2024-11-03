@@ -9,12 +9,12 @@ function ProvideForm() {
   const [searchUser, setSearchUser] = useState([]);
   const [searchItem, setSearchItem] = useState('');
   const [selectedStudent, setSelectedStudent] = useState(null);
-  const [searchBook, setSearchBook] = useState([]); // New state for books
-  const [searchBookItem, setSearchBookItem] = useState(''); // State for book search input
-  const [selectedBook, setSelectedBook] = useState(null); // Store selected book details
+  const [searchBook, setSearchBook] = useState([]);
+  const [searchBookItem, setSearchBookItem] = useState('');
+  const [selectedBook, setSelectedBook] = useState(null);
+  const [transactionHistory, setTransactionHistory] = useState([]); // Transaction history state
 
   useEffect(() => {
-    // Fetch students
     const fetchUsers = async () => {
       try {
         const response = await axios.get("http://127.0.0.1:8000/list-student/");
@@ -24,7 +24,6 @@ function ProvideForm() {
       }
     };
 
-    // Fetch books
     const fetchBooks = async () => {
       try {
         const response = await axios.get("http://127.0.0.1:8000/list-book/");
@@ -37,6 +36,32 @@ function ProvideForm() {
     fetchUsers();
     fetchBooks();
   }, []);
+
+  // Function to fetch transaction history for selected student
+  const fetchTransactionHistory = async (studentId) => {
+    try {
+      const response = await axios.get(`http://127.0.0.1:8000/list-provide/?student=${studentId}`);
+      setTransactionHistory(response.data);
+    } catch (error) {
+      console.log("Error fetching transaction history:", error);
+    }
+  };
+
+  // Set up interval-based auto-fetch for transaction history
+  useEffect(() => {
+    if (selectedStudent) {
+      // Fetch transaction history on initial selection
+      fetchTransactionHistory(selectedStudent.id);
+
+      // Set up interval to auto-fetch transaction history every 10 seconds
+      const intervalId = setInterval(() => {
+        fetchTransactionHistory(selectedStudent.id);
+      }, 10000);
+
+      // Cleanup interval on unmount or when selectedStudent changes
+      return () => clearInterval(intervalId);
+    }
+  }, [selectedStudent]);
 
   // Filter students by ID
   const filterData = searchUser.filter((item) =>
@@ -56,8 +81,6 @@ function ProvideForm() {
     });
   };
 
-  console.log(formData);
-
   const handleSelectStudent = (student) => {
     setSelectedStudent(student);
     setSearchItem(student.user_ID);
@@ -66,11 +89,10 @@ function ProvideForm() {
 
   const handleSelectBook = (book) => {
     setSelectedBook(book);
-    setSearchBookItem(book.book_name); // Set the search input to the selected book name
+    setSearchBookItem(book.book_name);
     setFormData({
       ...formData,
       book: book.id,
-      //book_name: book.book_name,
     });
   };
 
@@ -88,6 +110,7 @@ function ProvideForm() {
           position: "top-center",
           theme: "colored",
         });
+        fetchTransactionHistory(selectedStudent.id); // Update history immediately after submission
       } else {
         toast.error("Failed to provide book", {
           position: "top-center",
@@ -96,6 +119,19 @@ function ProvideForm() {
       }
     } catch (error) {
       console.log(error.response.data);
+    }
+  };
+
+  const handleProvideDelete = async (id) => {
+    try {
+      await axios.delete(`http://127.0.0.1:8000/delete-provide/${id}/`);
+      toast.success("Book Returned Successfully", {
+        position: 'top-center',
+        theme: 'colored'
+      });
+      fetchTransactionHistory(selectedStudent.id); // Refresh history immediately after deletion
+    } catch (error) {
+      console.log("Error deleting transaction:", error);
     }
   };
 
@@ -214,8 +250,49 @@ function ProvideForm() {
                     className="form-control"
                   />
                 </div>
-                <button className="mb-4 btn shadow">Add Book</button>
+                <div className="container mt-4">
+                  <button className="mb-4 mt-2 btn shadow">Add Book</button>
+                  <button type="reset" className="mb-4 mt-2 btn shadow">Clear</button>
+                </div>
               </form>
+            </div>
+          </div>
+
+          {/* Book Transaction History */}
+          <div className="col-10 ms-3 shadow rounded-2 p-2 mb-4 mt-5">
+            <div className="container">
+              <h2>Ongoing Book Records</h2>
+            </div>
+            <div className="container p-3">
+              <table className="table">
+                <thead>
+                  <tr>
+                    <th scope="col">No</th>
+                    <th scope="col">Book Name</th>
+                    <th scope="col">Provided Date</th>
+                    <th scope="col">Return Date</th>
+                    <th scope="col">Action</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {transactionHistory.map((item, index) => (
+                    <tr key={item.id}>
+                      <th scope="row">{index + 1}</th>
+                      <td>{item.book_name}</td>
+                      <td>{item.approved_date}</td>
+                      <td>{item.return_date}</td>
+                      <td>
+                        <button
+                          className="btn btn-danger"
+                          onClick={() => handleProvideDelete(item.id)}
+                        >
+                          Delete
+                        </button>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
             </div>
           </div>
         </>
