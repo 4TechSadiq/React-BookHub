@@ -1,39 +1,48 @@
-import React from 'react';
+import React, { useState } from 'react';
 import axios from 'axios';
-import { useState } from 'react';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
 function AddBook() {
   const [formdata, setFormData] = useState({});
+  const [loading, setLoading] = useState(false); // Loading state
 
   const handleInput = (e) => {
-    const { name, value } = e.target;
+    const { name, value, files } = e.target;
     setFormData({
       ...formdata,
-      [name]: value,
+      [name]: files ? files[0] : value, // If files exist, take the first file; otherwise, take value
     });
   };
 
   const HandleSubmit = async (e) => {
     e.preventDefault();
+
+    // Set loading to true
+    setLoading(true);
+
+    // Create a new FormData object
+    const data = new FormData();
+    for (const key in formdata) {
+      data.append(key, formdata[key]);
+    }
+
     try {
       const response = await axios.post(
         'http://127.0.0.1:8000/create-book/',
-        formdata,
+        data,
         {
-          method: 'POST',
           headers: {
-            'Content-Type': 'application/json',
+            'Content-Type': 'multipart/form-data',
           },
         }
       );
+
       if (response.status === 201) {
         toast.success('Data added successfully!', {
           position: 'top-center',
           theme: 'colored',
         });
-        
       } else {
         toast.error('Failed to add data.', {
           position: 'top-center',
@@ -42,16 +51,18 @@ function AddBook() {
       }
     } catch (error) {
       toast.error('Error occurred during submission.', {
-        position: toast.POSITION.TOP_CENTER,
+        position: 'top-center',
         theme: 'colored',
       });
       console.log(error.response);
+    } finally {
+      // Set loading to false once the request is complete
+      setLoading(false);
     }
   };
 
   return (
     <>
-      {/* Ensure ToastContainer is placed at the top level to catch any toast */}
       <ToastContainer />
       <div className='container d-flex justify-content-center'>
         <div className='col-6 mt-4 p-5 shadow rounded-4'>
@@ -95,7 +106,7 @@ function AddBook() {
               />
             </div>
             <div className='mb-2'>
-              <label className='form-label'>Enter ISB Number</label>
+              <label className='form-label'>Enter ISBN Number</label>
               <input
                 onChange={handleInput}
                 type='number'
@@ -124,11 +135,20 @@ function AddBook() {
               <button type='reset' className='btn btn-warning'>
                 Clear
               </button>
-              <button type='submit' className='btn btn-success'>
-                Submit
+              <button type='submit' className='btn btn-success' disabled={loading}>
+                {loading ? 'Submitting...' : 'Submit'}
               </button>
             </div>
           </form>
+          {/* Show loading message if loading */}
+          {loading && (
+            <div className="text-center mt-3">
+              <div className="spinner-border text-primary" role="status">
+                <span className="visually-hidden">Loading...</span>
+              </div>
+              <p>Submitting data, please wait...</p>
+            </div>
+          )}
         </div>
       </div>
     </>

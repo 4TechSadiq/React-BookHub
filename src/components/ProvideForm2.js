@@ -92,7 +92,7 @@ function ProvideForm() {
     setSearchBookItem(book.book_name);
     setFormData({
       ...formData,
-      book: book.id,
+      book: book.book_name,
     });
   };
 
@@ -278,7 +278,7 @@ function ProvideForm() {
                   {transactionHistory.map((item, index) => (
                     <tr key={item.id}>
                       <th scope="row">{index + 1}</th>
-                      <td>{item.book_name}</td>
+                      <td>{item.book}</td>
                       <td>{item.approved_date}</td>
                       <td>{item.return_date}</td>
                       <td>
