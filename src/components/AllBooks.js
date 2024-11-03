@@ -80,7 +80,7 @@ function AllBooks() {
   return (
     <div className='container ms-3 mt-4 rounded-5 shadow p-3'>
       <h2 className='text-center mb-4'>Books in the Library</h2>
-      <div className='mb-3'>
+      <div className='col-8 ms-3 mb-3'>
         <input
           type='text'
           placeholder='Search by book name or author...'
