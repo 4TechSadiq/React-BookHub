@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import axios from 'axios';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import './AddBook.css'; // Import a custom CSS file for styling
 
 function AddBook() {
   const [formdata, setFormData] = useState({});
@@ -11,17 +12,14 @@ function AddBook() {
     const { name, value, files } = e.target;
     setFormData({
       ...formdata,
-      [name]: files ? files[0] : value, // If files exist, take the first file; otherwise, take value
+      [name]: files ? files[0] : value,
     });
   };
 
   const HandleSubmit = async (e) => {
     e.preventDefault();
-
-    // Set loading to true
     setLoading(true);
 
-    // Create a new FormData object
     const data = new FormData();
     for (const key in formdata) {
       data.append(key, formdata[key]);
@@ -56,7 +54,6 @@ function AddBook() {
       });
       console.log(error.response);
     } finally {
-      // Set loading to false once the request is complete
       setLoading(false);
     }
   };
@@ -64,6 +61,14 @@ function AddBook() {
   return (
     <>
       <ToastContainer />
+      {loading && (
+        <div className="loading-overlay">
+          <div className="loading-spinner">
+            <div className="spinner-border text-primary" role="status"></div>
+            <p>Submitting data, please wait...</p>
+          </div>
+        </div>
+      )}
       <div className='container d-flex justify-content-center'>
         <div className='col-6 mt-4 p-5 shadow rounded-4'>
           <h3 className='text-center mb-3'>Add Book</h3>
@@ -136,19 +141,10 @@ function AddBook() {
                 Clear
               </button>
               <button type='submit' className='btn btn-success' disabled={loading}>
-                {loading ? 'Submitting...' : 'Submit'}
+                Submit
               </button>
             </div>
           </form>
-          {/* Show loading message if loading */}
-          {loading && (
-            <div className="text-center mt-3">
-              <div className="spinner-border text-primary" role="status">
-                <span className="visually-hidden">Loading...</span>
-              </div>
-              <p>Submitting data, please wait...</p>
-            </div>
-          )}
         </div>
       </div>
     </>
