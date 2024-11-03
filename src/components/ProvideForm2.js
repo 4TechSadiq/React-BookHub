@@ -37,6 +37,32 @@ function ProvideForm() {
     fetchBooks();
   }, []);
 
+  // Function to fetch transaction history for selected student
+  const fetchTransactionHistory = async (studentId) => {
+    try {
+      const response = await axios.get(`http://127.0.0.1:8000/list-provide/?student=${studentId}`);
+      setTransactionHistory(response.data);
+    } catch (error) {
+      console.log("Error fetching transaction history:", error);
+    }
+  };
+
+  // Set up interval-based auto-fetch for transaction history
+  useEffect(() => {
+    if (selectedStudent) {
+      // Fetch transaction history on initial selection
+      fetchTransactionHistory(selectedStudent.id);
+
+      // Set up interval to auto-fetch transaction history every 10 seconds
+      const intervalId = setInterval(() => {
+        fetchTransactionHistory(selectedStudent.id);
+      }, 10000);
+
+      // Cleanup interval on unmount or when selectedStudent changes
+      return () => clearInterval(intervalId);
+    }
+  }, [selectedStudent]);
+
   // Filter students by ID
   const filterData = searchUser.filter((item) =>
     item.user_ID.toLowerCase().includes(searchItem.toLowerCase())
@@ -59,7 +85,6 @@ function ProvideForm() {
     setSelectedStudent(student);
     setSearchItem(student.user_ID);
     setFormData({ ...formData, student: student.id });
-    fetchTransactionHistory(student.id); // Fetch transaction history for selected student
   };
 
   const handleSelectBook = (book) => {
@@ -85,6 +110,7 @@ function ProvideForm() {
           position: "top-center",
           theme: "colored",
         });
+        fetchTransactionHistory(selectedStudent.id); // Update history immediately after submission
       } else {
         toast.error("Failed to provide book", {
           position: "top-center",
@@ -96,23 +122,18 @@ function ProvideForm() {
     }
   };
 
-  const fetchTransactionHistory = async (studentId) => {
+  const handleProvideDelete = async (id) => {
     try {
-      const response = await axios.get(`http://127.0.0.1:8000/list-provide/?student=${studentId}`);
-      setTransactionHistory(response.data);
+      await axios.delete(`http://127.0.0.1:8000/delete-provide/${id}/`);
+      toast.success("Book Returned Successfully", {
+        position: 'top-center',
+        theme: 'colored'
+      });
+      fetchTransactionHistory(selectedStudent.id); // Refresh history immediately after deletion
     } catch (error) {
-      console.log("Error fetching transaction history:", error);
+      console.log("Error deleting transaction:", error);
     }
   };
-
-  const handleProvideDelete=((id)=>{
-    fetch(`http://127.0.0.1:8000/delete-provide/${id}/`,
-        {method:"DELETE"}
-    )
-    .then(()=>{
-        console.log("deleted")
-    })
-})
 
   return (
     <>
@@ -246,20 +267,27 @@ function ProvideForm() {
               <table className="table">
                 <thead>
                   <tr>
-                    <th>Book Name</th>
-                    <th>Issue Date</th>
-                    <th>Return Date</th>
-                    <th>Action</th>
+                    <th scope="col">No</th>
+                    <th scope="col">Book Name</th>
+                    <th scope="col">Provided Date</th>
+                    <th scope="col">Return Date</th>
+                    <th scope="col">Action</th>
                   </tr>
                 </thead>
                 <tbody>
-                  {transactionHistory.map((transaction) => (
-                    <tr key={transaction.id}>
-                      <td>{transaction.book_name}</td>
-                      <td>{transaction.approved_date}</td>
-                      <td>{transaction.return_date}</td>
+                  {transactionHistory.map((item, index) => (
+                    <tr key={item.id}>
+                      <th scope="row">{index + 1}</th>
+                      <td>{item.book_name}</td>
+                      <td>{item.approved_date}</td>
+                      <td>{item.return_date}</td>
                       <td>
-                        <button className="btn btn-danger" onClick={()=>{handleProvideDelete(transaction.id)}}>Return</button>
+                        <button
+                          className="btn btn-danger"
+                          onClick={() => handleProvideDelete(item.id)}
+                        >
+                          Delete
+                        </button>
                       </td>
                     </tr>
                   ))}
