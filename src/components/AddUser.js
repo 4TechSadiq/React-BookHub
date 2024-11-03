@@ -5,6 +5,7 @@ import { v4 as uuidv4 } from 'uuid';
 
 function AddUser() {
     const [formdata, setData] = useState({ user_ID: '', student_name: '', institution: '', profile: null });
+    const [isLoading, setIsLoading] = useState(false);
 
     // Generate a UUID-based user ID with a "BH-" prefix
     const generateUUIDUserID = () => `BH-${uuidv4().slice(0, 8).toUpperCase()}`;
@@ -26,6 +27,7 @@ function AddUser() {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+        setIsLoading(true); // Set loading to true
 
         const data = new FormData();
         for (const key in formdata) {
@@ -46,6 +48,8 @@ function AddUser() {
         } catch (error) {
             toast.error("Error occurred during submission", { position: 'top-center', theme: 'colored' });
             console.log(error.response);
+        } finally {
+            setIsLoading(false); // Reset loading state after submission
         }
     };
 
@@ -101,7 +105,17 @@ function AddUser() {
                             />
                         </div>
                         <button type='reset' className='btn btn-warning'>Clear</button>
-                        <button type='submit' className='btn btn-success ms-2'>Submit</button>
+                        <button 
+                            type='submit' 
+                            className='btn btn-success ms-2' 
+                            disabled={isLoading}
+                        >
+                            {isLoading ? (
+                                <span className="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+                            ) : (
+                                "Submit"
+                            )}
+                        </button>
                     </form>
                 </div>
             </div>

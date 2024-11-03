@@ -5,6 +5,9 @@ import 'react-toastify/dist/ReactToastify.css';
 
 function UserManagement() {
   const [users, setUsers] = useState([]);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [usersPerPage] = useState(5);
+  const [searchTerm, setSearchTerm] = useState(""); // State for search input
 
   const fetchUsers = () => {
     axios.get("http://127.0.0.1:8000/list-student/")
@@ -49,10 +52,54 @@ function UserManagement() {
     }
   };
 
+  // Logic for pagination
+  const indexOfLastUser = currentPage * usersPerPage;
+  const indexOfFirstUser = indexOfLastUser - usersPerPage;
+  
+  // Filtered users based on search term
+  const filteredUsers = users.filter(user => 
+    user.user_ID.toLowerCase().includes(searchTerm.toLowerCase()) || 
+    user.student_name.toLowerCase().includes(searchTerm.toLowerCase())
+  );
+
+  const currentUsers = filteredUsers.slice(indexOfFirstUser, indexOfLastUser);
+  const totalPages = Math.ceil(filteredUsers.length / usersPerPage);
+
+  const handlePageChange = (pageNumber) => {
+    setCurrentPage(pageNumber);
+  };
+
+  const handleNext = () => {
+    if (currentPage < totalPages) {
+      setCurrentPage(currentPage + 1);
+    }
+  };
+
+  const handlePrevious = () => {
+    if (currentPage > 1) {
+      setCurrentPage(currentPage - 1);
+    }
+  };
+
+  // Handle search input change
+  const handleSearchChange = (e) => {
+    setSearchTerm(e.target.value);
+    setCurrentPage(1); // Reset to first page on search
+  };
+
   return (
     <>
       <div className='container ms-2 mt-4 rounded-5 shadow p-3'>
         <h2 className='text-center'>BookHub Users</h2>
+        <div className='mt-4'>
+          <input 
+            type="text" 
+            className="form-control" 
+            placeholder="Search by User ID or Name" 
+            value={searchTerm} 
+            onChange={handleSearchChange} 
+          />
+        </div>
         <div className='container mt-4 d-flex justify-content-center'>
           <table className="table table-striped table-hover">
             <thead>
@@ -66,9 +113,9 @@ function UserManagement() {
               </tr>
             </thead>
             <tbody>
-              {users.map((item, index) => (
+              {currentUsers.map((item, index) => (
                 <tr key={item.id || index}>
-                  <th scope="row">{index + 1}</th>
+                  <th scope="row">{indexOfFirstUser + index + 1}</th>
                   <td>{item.user_ID}</td>
                   <td>
                     <img 
@@ -97,6 +144,31 @@ function UserManagement() {
               ))}
             </tbody>
           </table>
+        </div>
+        <div className="pagination d-flex justify-content-center mt-3">
+          <button 
+            onClick={handlePrevious} 
+            className="btn btn-light me-2"
+            disabled={currentPage === 1}
+          >
+            Previous
+          </button>
+          {Array.from({ length: totalPages }, (_, index) => (
+            <button 
+              key={index + 1} 
+              onClick={() => handlePageChange(index + 1)} 
+              className={`btn me-2 ${currentPage === index + 1 ? 'btn-primary' : 'btn-light'}`}
+            >
+              {index + 1}
+            </button>
+          ))}
+          <button 
+            onClick={handleNext} 
+            className="btn btn-light ms-2"
+            disabled={currentPage === totalPages}
+          >
+            Next
+          </button>
         </div>
       </div>
       <ToastContainer />
