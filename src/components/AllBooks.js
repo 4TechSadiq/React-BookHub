@@ -2,37 +2,54 @@ import axios from 'axios';
 import React, { useEffect, useState, useCallback } from 'react';
 
 function AllBooks() {
-  const [books, setBooks] = useState([]);
+  const [allBooks, setAllBooks] = useState([]); // Store all books initially
+  const [books, setBooks] = useState([]);       // Books to display on the current page
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
   const [searchTerm, setSearchTerm] = useState('');
-  const [displaySearchTerm, setDisplaySearchTerm] = useState(''); // New state for immediate input display
+  const [displaySearchTerm, setDisplaySearchTerm] = useState('');
 
-  const fetchBooks = async (page, search = '') => {
+  const recordsPerPage = 5; // Set the number of records per page
+
+  const fetchBooks = async () => {
     try {
-      const response = await axios.get('http://127.0.0.1:8000/list-book/', {
-        params: { page: page, search: search }
-      });
+      const response = await axios.get('http://127.0.0.1:8000/list-book/');
 
       console.log('API Response:', response.data);
-
-      if (response.data.results) {
-        setBooks(response.data.results);
-        setTotalPages(Math.ceil(response.data.total_count / 5));
-      } else {
-        setBooks(response.data);
-        setTotalPages(1);
-      }
+      setAllBooks(response.data); // Store all books
+      setCurrentPage(1); // Reset to the first page on load
     } catch (error) {
       console.error('Error fetching books:', error);
-      setBooks([]);
-      setTotalPages(1);
+      setAllBooks([]); // Clear all books on error
     }
   };
 
   useEffect(() => {
-    fetchBooks(currentPage, searchTerm);
-  }, [currentPage, searchTerm]);
+    fetchBooks();
+  }, []);
+
+  // Update the displayed books based on search term and pagination
+  const updateDisplayedBooks = useCallback(() => {
+    // Filter books based on the search term
+    const filteredBooks = allBooks.filter(
+      (book) =>
+        book.book_name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        book.author.toLowerCase().includes(searchTerm.toLowerCase())
+    );
+
+    // Calculate total pages based on filtered results
+    const total = Math.ceil(filteredBooks.length / recordsPerPage);
+    setTotalPages(total);
+
+    // Get books for the current page
+    const startIndex = (currentPage - 1) * recordsPerPage;
+    const paginatedBooks = filteredBooks.slice(startIndex, startIndex + recordsPerPage);
+    setBooks(paginatedBooks);
+  }, [allBooks, searchTerm, currentPage]);
+
+  useEffect(() => {
+    updateDisplayedBooks();
+  }, [updateDisplayedBooks]);
 
   const handlePageChange = (page) => {
     setCurrentPage(page);
@@ -40,8 +57,7 @@ function AllBooks() {
 
   const handleDisplaySearchChange = (e) => {
     setDisplaySearchTerm(e.target.value);
-    setCurrentPage(1);
-    debouncedSearch(e.target.value); // Trigger the debounced search
+    debouncedSearch(e.target.value);
   };
 
   // Debounce function for optimized search
@@ -53,7 +69,13 @@ function AllBooks() {
     };
   };
 
-  const debouncedSearch = useCallback(debounce((term) => setSearchTerm(term), 300), []);
+  const debouncedSearch = useCallback(
+    debounce((term) => {
+      setSearchTerm(term);
+      setCurrentPage(1); // Reset to the first page on new search
+    }, 300),
+    []
+  );
 
   return (
     <div className='container ms-3 mt-4 rounded-5 shadow p-3'>
@@ -63,8 +85,8 @@ function AllBooks() {
           type='text'
           placeholder='Search by book name or author...'
           className='form-control'
-          value={displaySearchTerm} // Display the immediate input
-          onChange={handleDisplaySearchChange} // Debounced input handler
+          value={displaySearchTerm}
+          onChange={handleDisplaySearchChange}
         />
       </div>
       <div className='container mt-4 d-flex justify-content-center'>
@@ -83,7 +105,7 @@ function AllBooks() {
             {books && books.length > 0 ? (
               books.map((item, index) => (
                 <tr key={index}>
-                  <th scope="row">{index + 1 + (currentPage - 1) * 5}</th>
+                  <th scope="row">{index + 1 + (currentPage - 1) * recordsPerPage}</th>
                   <td>{item.book_name}</td>
                   <td>{item.author}</td>
                   <td>${item.price}</td>
