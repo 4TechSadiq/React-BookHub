@@ -2,11 +2,11 @@ import React, { useState } from 'react';
 import axios from 'axios';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import './AddBook.css'; // Import a custom CSS file for styling
+import './AddBook.css';
 
 function AddBook() {
   const [formdata, setFormData] = useState({});
-  const [loading, setLoading] = useState(false); // Loading state
+  const [loading, setLoading] = useState(false);
 
   const handleInput = (e) => {
     const { name, value, files } = e.target;
@@ -41,6 +41,7 @@ function AddBook() {
           position: 'top-center',
           theme: 'colored',
         });
+        setFormData({}); // Clear the form data
       } else {
         toast.error('Failed to add data.', {
           position: 'top-center',
@@ -80,6 +81,7 @@ function AddBook() {
                 onChange={handleInput}
                 type='text'
                 name='book_name'
+                value={formdata.book_name || ''} // Bind value to formdata
                 className='form-control'
               />
             </div>
@@ -89,6 +91,7 @@ function AddBook() {
                 onChange={handleInput}
                 type='text'
                 name='author'
+                value={formdata.author || ''}
                 className='form-control'
               />
             </div>
@@ -98,6 +101,7 @@ function AddBook() {
                 onChange={handleInput}
                 type='number'
                 name='price'
+                value={formdata.price || ''}
                 className='form-control'
               />
             </div>
@@ -107,6 +111,7 @@ function AddBook() {
                 onChange={handleInput}
                 type='text'
                 name='publication'
+                value={formdata.publication || ''}
                 className='form-control'
               />
             </div>
@@ -116,6 +121,7 @@ function AddBook() {
                 onChange={handleInput}
                 type='number'
                 name='isbnumber'
+                value={formdata.isbnumber || ''}
                 className='form-control'
               />
             </div>
@@ -133,6 +139,7 @@ function AddBook() {
               <textarea
                 onChange={handleInput}
                 name='description'
+                value={formdata.description || ''}
                 className='form-control'
               />
             </div>

@@ -1,6 +1,17 @@
-import React from 'react'
+import axios from 'axios'
+import React, { useEffect, useState } from 'react'
 
 function AllBooks() {
+
+  const [book, setBook] = useState([])
+
+  useEffect(()=>{
+    axios.get(`http://127.0.0.1:8000/list-book/`)
+    .then((response)=>{
+      setBook(response.data)
+    })
+  },[])
+
   return (
     <>
     <div className='container ms-3 mt-4 rounded-5 shadow p-3'>
@@ -12,31 +23,29 @@ function AllBooks() {
             <th scope="col">SI no</th>
             <th scope="col">Book Name</th>
             <th scope="col">Author</th>
+            <th scope="col">Price</th>
             <th scope="col">ISB Number</th>
             <th scope='col'>More info</th>
           </tr>
         </thead>
         <tbody>
-          <tr>
-            <th scope="row">1</th>
-            <td>Mark</td>
-            <td>Otto</td>
-            <td>@mdo</td>
-            <td><button className='btn btn-dark'>More Info</button></td>
-          </tr>
-          <tr>
-            <th scope="row">2</th>
-            <td>Jacob</td>
-            <td>Thornton</td>
-            <td>@fat</td>
-            <td><button className='btn btn-dark'>More Info</button></td>
-          </tr>
-          <tr>
-            <th scope="row">3</th>
-            <td colspan="2">Larry the Bird</td>
-            <td>@twitter</td>
-            <td><button className='btn btn-dark'>More Info</button></td>
-          </tr>
+          {book.map((item, index)=>{
+            return(
+              <tr key={index}>
+                <th scope="row">{index+1}</th>
+                <td>{item.book_name}</td>
+                <td>{item.author}</td>
+                <td>${item.price}</td>
+                <td>{item.isbnumber}</td>
+                <td>
+                  <button className='btn btn-dark'>More Info</button>
+                </td>
+              </tr>
+            )
+          }
+          )}
+          
+          
         </tbody>
       </table>
       </div>
