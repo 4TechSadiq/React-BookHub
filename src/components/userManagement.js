@@ -91,10 +91,10 @@ function UserManagement() {
     <>
       <div className='col-11 ms-5 mt-4 rounded-5 shadow p-3'>
         <h2 className='text-center'>BookHub Users</h2>
-        <div className='mt-4'>
+        <div className='col-6 ms-3 mt-4'>
           <input 
             type="text" 
-            className="form-control" 
+            className="form-control shadow" 
             placeholder="Search by User ID or Name" 
             value={searchTerm} 
             onChange={handleSearchChange} 

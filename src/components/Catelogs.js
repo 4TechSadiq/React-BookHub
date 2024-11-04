@@ -41,7 +41,7 @@ return (
                     
             </div>
 
-            <div className='col-10 shadow p-5 ms-4 mt-5 rounded-3'>
+            <div className='col-10 p-5 ms-4 mt-5'>
                     <h2 className='text-center mt-5'>Add New Catelog</h2>
                     <div className='d-flex justify-content-center'>
                             <div className='col-lg-6 p-5'>

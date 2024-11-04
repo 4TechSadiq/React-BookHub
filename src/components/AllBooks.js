@@ -129,7 +129,29 @@ function AllBooks() {
     }, 300),
     []
   );
-
+  const handleDelete = async (id) => {
+    try {
+      await axios.delete(`http://127.0.0.1:8000/delete-book/${id}/`);
+      toast.success('Book deleted successfully!', {
+        position: 'top-center',
+        theme: 'colored',
+      });
+      
+      // Update the allBooks state by removing the deleted book
+      setAllBooks((prevBooks) => prevBooks.filter((book) => book.id !== id));
+      
+      // Reset the current page if it goes out of range after deletion
+      if (books.length === 1 && currentPage > 1) {
+        setCurrentPage((prevPage) => prevPage - 1);
+      }
+    } catch (error) {
+      toast.error('Failed to delete the book.', {
+        position: 'top-center',
+        theme: 'colored',
+      });
+    }
+  };
+  
   return (
     <div className='container ms-3 mt-4 rounded-5 shadow p-3'>
       <h2 className='text-center mb-4'>Books in the Library</h2>
@@ -180,7 +202,7 @@ function AllBooks() {
                     >
                       Update
                     </button>
-                    <button className='btn btn-danger ms-2'>Delete</button>
+                    <button className='btn btn-danger ms-2' onClick={()=>{handleDelete(item.id)}}>Delete</button>
                   </td>
                 </tr>
               ))
