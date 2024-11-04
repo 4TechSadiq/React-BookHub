@@ -95,10 +95,11 @@ function AllBooks() {
             <tr>
               <th scope="col">SI no</th>
               <th scope="col">Book Name</th>
+              <th scope="col">Image</th>
               <th scope="col">Author</th>
               <th scope="col">Price</th>
               <th scope="col">ISB Number</th>
-              <th scope='col'>More info</th>
+              <th scope='col'>Actions</th>
             </tr>
           </thead>
           <tbody>
@@ -107,11 +108,20 @@ function AllBooks() {
                 <tr key={index}>
                   <th scope="row">{index + 1 + (currentPage - 1) * recordsPerPage}</th>
                   <td>{item.book_name}</td>
+                  <td>
+                    <img 
+                    src={item.image} 
+                    width={75}
+                    height={75}
+                    style={{ objectFit: 'cover', borderRadius: '5%' }}
+                    />
+                  </td>
                   <td>{item.author}</td>
                   <td>${item.price}</td>
                   <td>{item.isbnumber}</td>
                   <td>
-                    <button className='btn btn-dark'>More Info</button>
+                    <button className='btn btn-warning'>Update</button>
+                    <button className='btn btn-danger ms-2'>Delete</button>
                   </td>
                 </tr>
               ))
