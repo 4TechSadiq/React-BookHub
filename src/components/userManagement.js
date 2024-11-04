@@ -89,7 +89,7 @@ function UserManagement() {
 
   return (
     <>
-      <div className='container ms-2 mt-4 rounded-5 shadow p-3'>
+      <div className='col-11 ms-5 mt-4 rounded-5 shadow p-3'>
         <h2 className='text-center'>BookHub Users</h2>
         <div className='mt-4'>
           <input 

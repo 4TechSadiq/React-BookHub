@@ -1,26 +1,26 @@
 import axios from 'axios';
 import React, { useEffect, useState, useCallback } from 'react';
+import { toast } from 'react-toastify';
 
 function AllBooks() {
-  const [allBooks, setAllBooks] = useState([]); // Store all books initially
-  const [books, setBooks] = useState([]);       // Books to display on the current page
+  const [allBooks, setAllBooks] = useState([]);
+  const [books, setBooks] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
   const [searchTerm, setSearchTerm] = useState('');
   const [displaySearchTerm, setDisplaySearchTerm] = useState('');
-
-  const recordsPerPage = 5; // Set the number of records per page
+  const [update, setUpdate] = useState({});
+  const [isModalOpen, setIsModalOpen] = useState(false); // Controls modal open/close state
+  const recordsPerPage = 5;
 
   const fetchBooks = async () => {
     try {
       const response = await axios.get('http://127.0.0.1:8000/list-book/');
-
-      console.log('API Response:', response.data);
-      setAllBooks(response.data); // Store all books
-      setCurrentPage(1); // Reset to the first page on load
+      setAllBooks(response.data);
+      setCurrentPage(1);
     } catch (error) {
       console.error('Error fetching books:', error);
-      setAllBooks([]); // Clear all books on error
+      setAllBooks([]);
     }
   };
 
@@ -28,20 +28,74 @@ function AllBooks() {
     fetchBooks();
   }, []);
 
-  // Update the displayed books based on search term and pagination
+  // Load book details into modal for updating
+  const updateBook = async (id) => {
+    try {
+      const response = await axios.get(`http://127.0.0.1:8000/detail-book/${id}/`);
+      setUpdate(response.data);
+      setIsModalOpen(true); // Open the modal
+    } catch (error) {
+      console.error('Error fetching book details:', error);
+    }
+  };
+
+  // Update the input fields in the modal
+  const handleUpdateChange = (e, fieldName) => {
+    const value = e.target.type === 'file' ? e.target.files[0] : e.target.value;
+    setUpdate((prev) => ({
+      ...prev,
+      [fieldName]: value,
+    }));
+  };
+
+  // Submit updated book data
+  const handleUpdateSubmit = async (e) => {
+    e.preventDefault();
+    const requestData = {
+      id: update.id,
+      book_name: update.book_name,
+      author: update.author,
+      price: update.price,
+      publication: update.publication,
+      isbnumber: update.isbnumber,
+      description: update.description,
+      image: update.image,
+    };
+
+    try {
+      const response = await axios.put(`http://127.0.0.1:8000/update-book/${update.id}`, requestData, {
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
+
+      if (response.status === 200) {
+        toast.success('Data updated successfully!', {
+          position: 'top-center',
+          theme: 'colored',
+        });
+        fetchBooks();
+        setIsModalOpen(false); // Close the modal on success
+      } else {
+        throw new Error('Update failed');
+      }
+    } catch (error) {
+      toast.error('Failed to update data.', {
+        position: 'top-center',
+        theme: 'colored',
+      });
+    }
+  };
+
+  // Pagination and Search Logic
   const updateDisplayedBooks = useCallback(() => {
-    // Filter books based on the search term
     const filteredBooks = allBooks.filter(
       (book) =>
         book.book_name.toLowerCase().includes(searchTerm.toLowerCase()) ||
         book.author.toLowerCase().includes(searchTerm.toLowerCase())
     );
-
-    // Calculate total pages based on filtered results
     const total = Math.ceil(filteredBooks.length / recordsPerPage);
     setTotalPages(total);
-
-    // Get books for the current page
     const startIndex = (currentPage - 1) * recordsPerPage;
     const paginatedBooks = filteredBooks.slice(startIndex, startIndex + recordsPerPage);
     setBooks(paginatedBooks);
@@ -60,7 +114,6 @@ function AllBooks() {
     debouncedSearch(e.target.value);
   };
 
-  // Debounce function for optimized search
   const debounce = (func, delay) => {
     let timer;
     return (...args) => {
@@ -72,7 +125,7 @@ function AllBooks() {
   const debouncedSearch = useCallback(
     debounce((term) => {
       setSearchTerm(term);
-      setCurrentPage(1); // Reset to the first page on new search
+      setCurrentPage(1);
     }, 300),
     []
   );
@@ -120,14 +173,20 @@ function AllBooks() {
                   <td>${item.price}</td>
                   <td>{item.isbnumber}</td>
                   <td>
-                    <button className='btn btn-warning'>Update</button>
+                    <button 
+                      type="button" 
+                      className="btn btn-warning" 
+                      onClick={() => updateBook(item.id)}
+                    >
+                      Update
+                    </button>
                     <button className='btn btn-danger ms-2'>Delete</button>
                   </td>
                 </tr>
               ))
             ) : (
               <tr>
-                <td colSpan="6" className="text-center">
+                <td colSpan="7" className="text-center">
                   No books available
                 </td>
               </tr>
@@ -135,6 +194,106 @@ function AllBooks() {
           </tbody>
         </table>
       </div>
+
+      {/* Update Modal */}
+      {/* Update Modal */}
+{isModalOpen && (
+  <div className="modal show d-block" tabIndex="-1" role="dialog">
+    <div className="modal-dialog modal-dialog-centered" role="document">
+      <div className="modal-content">
+        <div className="modal-header">
+          <h5 className="modal-title">Update Book</h5>
+          <button
+            type="button"
+            className="btn-close"
+            onClick={() => setIsModalOpen(false)}
+            aria-label="Close"
+          ></button>
+        </div>
+        <div className="modal-body">
+          <form onSubmit={handleUpdateSubmit}>
+            <div className="mb-2">
+              <label className="form-label">Book Name</label>
+              <input
+                value={update.book_name || ""}
+                onChange={(e) => handleUpdateChange(e, "book_name")}
+                type="text"
+                className="form-control"
+              />
+            </div>
+            <div className="mb-2">
+              <label className="form-label">Author</label>
+              <input
+                value={update.author || ""}
+                onChange={(e) => handleUpdateChange(e, "author")}
+                type="text"
+                className="form-control"
+              />
+            </div>
+            <div className="mb-2">
+              <label className="form-label">Price</label>
+              <input
+                value={update.price || ""}
+                onChange={(e) => handleUpdateChange(e, "price")}
+                type="number"
+                className="form-control"
+              />
+            </div>
+            <div className="mb-2">
+              <label className="form-label">Publication</label>
+              <input
+                value={update.publication || ""}
+                onChange={(e) => handleUpdateChange(e, "publication")}
+                type="text"
+                className="form-control"
+              />
+            </div>
+            <div className="mb-2">
+              <label className="form-label">ISBN Number</label>
+              <input
+                value={update.isbnumber || ""}
+                onChange={(e) => handleUpdateChange(e, "isbnumber")}
+                type="number"
+                className="form-control"
+              />
+            </div>
+            <div className="mb-2">
+              <label className="form-label">Image</label>
+              <input
+                onChange={(e) => handleUpdateChange(e, "image")}
+                type="file"
+                className="form-control"
+              />
+            </div>
+            <div className="mb-2">
+              <label className="form-label">Description</label>
+              <textarea
+                value={update.description || ""}
+                onChange={(e) => handleUpdateChange(e, "description")}
+                className="form-control"
+              />
+            </div>
+            <div className="modal-footer">
+              <button
+                type="button"
+                className="btn btn-secondary"
+                onClick={() => setIsModalOpen(false)}
+              >
+                Close
+              </button>
+              <button type="submit" className="btn btn-success">
+                Update
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+)}
+
+
+      {/* Pagination */}
       <div className='d-flex justify-content-center mt-4'>
         <nav>
           <ul className='pagination'>
