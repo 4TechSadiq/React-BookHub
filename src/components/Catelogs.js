@@ -1,8 +1,51 @@
-import React from 'react'
+import React, { useState } from 'react'
+import axios from 'axios';
+import { toast, ToastContainer } from 'react-toastify';
+
 
 function Catelogs() {
+        const [catelogs, setCatelogs] = useState({});        
+
+        const handleInput = (e) =>{
+                const {name,value} = e.target;
+                setCatelogs({
+                        ...catelogs,
+                        [name]: value
+                })
+        }
+        console.log(catelogs)
+
+        const handleSubmit = (e) =>{
+                e.preventDefault();
+                try{
+                        const response = axios.post("http://127.0.0.1:8000/create-catelog/", catelogs,{
+                                headers: {
+                                        'Content-Type': 'application/json'
+                                }
+                        })
+                        if(response.status === 201){
+                                toast.success("Catelog Created Successfully", { position: 'top-center', theme: 'colored' });
+                                setCatelogs({}); // Clear the form data
+                        } else {
+                                toast.error('Failed to add data.', {
+                                        position: 'top-center',
+                                        theme: 'colored',
+                                });
+                        }
+                }catch(error){
+                        toast.error('Error occurred during submission.', {
+                                position: 'top-center',
+                                theme: 'colored',
+                        });
+                        console.log(error.response);
+                }
+        }
+
+
+
 return (
     <>
+    <ToastContainer />
             <div className='container mt-4'>
                     <h2 className='text-center'>Catelogs</h2>
                     <div className='container mt-4 d-flex justify-content-evenly flex-wrap'>
@@ -45,22 +88,22 @@ return (
                     <h2 className='text-center mt-5'>Add New Catelog</h2>
                     <div className='d-flex justify-content-center'>
                             <div className='col-lg-6 p-5'>
-                                    <form>
+                                    <form onSubmit={handleSubmit}>
                                             <div className='mb-3'>
                                                     <label htmlFor='catelogName' className='form-label'>Catelog Name</label>
-                                                    <input type='text' className='form-control' id='catelogName'></input>
+                                                    <input onChange={handleInput} type='text' name='catalog_name' className='form-control' id='catelogName'></input>
                                             </div>
                                             <div className='mb-3'>
                                                     <label htmlFor='catelogDescription' className='form-label'>Catelog Description</label>
-                                                    <textarea className='form-control' id='catelogDescription'></textarea>
+                                                    <textarea onChange={handleInput} className='form-control' name='catalog_desc' id='catelogDescription'></textarea>
                                             </div>
                                             <div className='mb-3'>
                                                     <label htmlFor='catelogBooks' className='form-label'>Books in catelog</label>
-                                                    <input type='text' className='form-control' id='catelogBooks'></input>
+                                                    <input onChange={handleInput} type='text' className='form-control' name='catalog_books' id='catelogBooks'></input>
                                             </div>
                                             <div className='mb-3'>
                                                     <label htmlFor='catelogImage' className='form-label'>Catelog Image</label>
-                                                    <input type='file' className='form-control' id='catelogImage'></input>
+                                                    <input onChange={handleInput} type='file' name='catalog_image' className='form-control' id='catelogImage'></input>
                                             </div>
                                             <div className='mb-3 d-flex justify-content-center'>
                                                     <button className='btn btn-dark'>Submit</button>
