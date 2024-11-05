@@ -7,7 +7,15 @@ function UserManagement() {
   const [users, setUsers] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [usersPerPage] = useState(5);
-  const [searchTerm, setSearchTerm] = useState(""); // State for search input
+  const [searchTerm, setSearchTerm] = useState(""); 
+  const [update, setUpdate] = useState({})
+
+  const updateDetails = (id) =>{
+    console.log(id)
+    fetch(`http://127.0.0.1:8000/detail-student/${id}/`) // passing id with api
+    .then(response=>response.json())
+    .then(res=>setUpdate(res))
+ }
 
   const fetchUsers = () => {
     axios.get("http://127.0.0.1:8000/list-student/")
@@ -129,13 +137,42 @@ function UserManagement() {
                   <td>{item.student_name}</td>
                   <td>{item.institution}</td>
                   <td>
-                    <button className='btn btn-primary me-2'>Edit</button>
+                  <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal">
+                    Update
+                  </button>
+
+                    <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                      <div class="modal-dialog">
+                        <div class="modal-content">
+                          <div class="modal-header">
+                            <h1 class="modal-title fs-5" id="exampleModalLabel">Modal title</h1>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                          </div>
+                          <div class="modal-body">
+                            <form>
+                              <div class="mb-3">
+                                <label className='form-label'>Username</label>
+                                <input type="text" className="form-control" id="username"/>
+                              </div>
+                              <div class="mb-3">
+                                <label className='form-label'>Institution</label>
+                                <input type="text" className="form-control" id="institution"/>
+                              </div>
+                            </form>
+                          </div>
+                          <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                            <button type="button" class="btn btn-primary">Save changes</button>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
                     <button 
                       onClick={() => {
                         console.log("Delete button clicked for ID:", item.id);
                         handleDelete(item.id);
                       }} 
-                      className='btn btn-danger'
+                      className='btn ms-2 btn-danger'
                     >
                       Delete
                     </button>
