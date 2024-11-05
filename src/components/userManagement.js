@@ -7,15 +7,8 @@ function UserManagement() {
   const [users, setUsers] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [usersPerPage] = useState(5);
-  const [searchTerm, setSearchTerm] = useState(""); 
-  const [update, setUpdate] = useState({})
-
-  const updateDetails = (id) =>{
-    console.log(id)
-    fetch(`http://127.0.0.1:8000/detail-student/${id}/`) // passing id with api
-    .then(response=>response.json())
-    .then(res=>setUpdate(res))
- }
+  const [searchTerm, setSearchTerm] = useState("");
+  const [update, setUpdate] = useState({});
 
   const fetchUsers = () => {
     axios.get("http://127.0.0.1:8000/list-student/")
@@ -35,43 +28,49 @@ function UserManagement() {
 
   const handleDelete = async (id) => {
     try {
-      console.log("Attempting to delete user with ID:", id);
-
-      const response = await axios.delete(
-        `http://127.0.0.1:8000/delete-student/${id}/`,
-        { headers: { 'Content-Type': 'application/json' } }
-      );
-
-      console.log("Delete response:", response);
-
+      const response = await axios.delete(`http://127.0.0.1:8000/delete-student/${id}/`);
       if (response.status === 204 || response.status === 200) {
-        console.log("Delete successful for ID:", id);
         toast.success("User Deleted Successfully", { position: 'top-center', theme: 'colored' });
-
-        // Update local state immediately without refetching
         setUsers((prevUsers) => prevUsers.filter(user => user.id !== id));
       } else {
-        console.error("Unexpected response status:", response.status);
         toast.error("Failed to delete user");
       }
     } catch (error) {
-      console.error("Error during deletion:", error);
       toast.error(error.response?.data?.message || "Failed to delete user");
     }
   };
 
-  // Logic for pagination
-  const indexOfLastUser = currentPage * usersPerPage;
-  const indexOfFirstUser = indexOfLastUser - usersPerPage;
-  
-  // Filtered users based on search term
-  const filteredUsers = users.filter(user => 
-    user.user_ID.toLowerCase().includes(searchTerm.toLowerCase()) || 
-    user.student_name.toLowerCase().includes(searchTerm.toLowerCase())
-  );
+  const updateDetails = (id) => {
+    fetch(`http://127.0.0.1:8000/detail-student/${id}/`)
+      .then(response => response.json())
+      .then(res => setUpdate(res));
+  };
 
-  const currentUsers = filteredUsers.slice(indexOfFirstUser, indexOfLastUser);
-  const totalPages = Math.ceil(filteredUsers.length / usersPerPage);
+  const handleUpdateSubmit = async () => {
+    try {
+      const updatedData = {
+        student_name: update.student_name || "",
+        institution: update.institution || "",
+        user_ID: update.user_ID || "",  // If required by your API
+        profile: update.profile || ""  // If required by your API
+      };
+
+      console.log("Update data:", updatedData);
+
+      const response = await axios.put(
+        `http://127.0.0.1:8000/update-student/${update.id}/`,
+        updatedData
+      );
+
+      if (response.status === 200) {
+        toast.success("User Updated Successfully", { position: 'top-center', theme: 'colored' });
+        fetchUsers();  // Refresh the user list
+      }
+    } catch (error) {
+      console.error("Error updating user:", error);
+      toast.error("Failed to update user");
+    }
+  };
 
   const handlePageChange = (pageNumber) => {
     setCurrentPage(pageNumber);
@@ -89,11 +88,19 @@ function UserManagement() {
     }
   };
 
-  // Handle search input change
   const handleSearchChange = (e) => {
     setSearchTerm(e.target.value);
-    setCurrentPage(1); // Reset to first page on search
+    setCurrentPage(1);
   };
+
+  const indexOfLastUser = currentPage * usersPerPage;
+  const indexOfFirstUser = indexOfLastUser - usersPerPage;
+  const filteredUsers = users.filter(user => 
+    user.user_ID.toLowerCase().includes(searchTerm.toLowerCase()) || 
+    user.student_name.toLowerCase().includes(searchTerm.toLowerCase())
+  );
+  const currentUsers = filteredUsers.slice(indexOfFirstUser, indexOfLastUser);
+  const totalPages = Math.ceil(filteredUsers.length / usersPerPage);
 
   return (
     <>
@@ -137,41 +144,55 @@ function UserManagement() {
                   <td>{item.student_name}</td>
                   <td>{item.institution}</td>
                   <td>
-                  <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal">
-                    Update
-                  </button>
+                    <button 
+                      type="button" 
+                      className="btn btn-primary" 
+                      data-bs-toggle="modal" 
+                      data-bs-target="#exampleModal" 
+                      onClick={() => updateDetails(item.id)}
+                    >
+                      Update
+                    </button>
 
-                    <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-                      <div class="modal-dialog">
-                        <div class="modal-content">
-                          <div class="modal-header">
-                            <h1 class="modal-title fs-5" id="exampleModalLabel">Modal title</h1>
-                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    <div className="modal fade" id="exampleModal" tabIndex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                      <div className="modal-dialog">
+                        <div className="modal-content">
+                          <div className="modal-header">
+                            <h5 className="modal-title" id="exampleModalLabel">Update User</h5>
+                            <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                           </div>
-                          <div class="modal-body">
+                          <div className="modal-body">
                             <form>
-                              <div class="mb-3">
+                              <div className="mb-3">
                                 <label className='form-label'>Username</label>
-                                <input type="text" className="form-control" id="username"/>
+                                <input 
+                                  type="text" 
+                                  className="form-control" 
+                                  value={update.student_name || ""} 
+                                  onChange={(e) => setUpdate({...update, student_name: e.target.value})}
+                                />
                               </div>
-                              <div class="mb-3">
+                              <div className="mb-3">
                                 <label className='form-label'>Institution</label>
-                                <input type="text" className="form-control" id="institution"/>
+                                <input 
+                                  type="text" 
+                                  className="form-control" 
+                                  value={update.institution || ""} 
+                                  onChange={(e) => setUpdate({...update, institution: e.target.value})}
+                                />
                               </div>
                             </form>
                           </div>
-                          <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                            <button type="button" class="btn btn-primary">Save changes</button>
+                          <div className="modal-footer">
+                            <button type="button" className="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                            <button type="button" className="btn btn-primary" onClick={handleUpdateSubmit} data-bs-dismiss="modal">Save changes</button>
                           </div>
                         </div>
                       </div>
                     </div>
+
                     <button 
-                      onClick={() => {
-                        console.log("Delete button clicked for ID:", item.id);
-                        handleDelete(item.id);
-                      }} 
+                      onClick={() => handleDelete(item.id)} 
                       className='btn ms-2 btn-danger'
                     >
                       Delete
