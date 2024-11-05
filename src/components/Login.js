@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { toast } from 'react-toastify';
+import { toast, ToastContainer } from 'react-toastify';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 
@@ -47,6 +47,8 @@ function Login() {
   };
 
   return (
+    <>
+    <ToastContainer />
     <div className='container mt-5'>
       <div className='container d-flex justify-content-center mt-5'>
         <div className='col-lg-5 col-sm-10 col-md-10 mt-5 p-5 shadow rounded-5'>
@@ -79,7 +81,9 @@ function Login() {
         </div>
       </div>
     </div>
+    </>
   );
+  
 }
 
 export default Login;
