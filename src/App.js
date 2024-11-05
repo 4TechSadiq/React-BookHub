@@ -17,8 +17,8 @@ function App() {
         {/* <SideBar/> */}
         <BrowserRouter>
           <Routes>
-            <Route path='login' element={<Login/>}></Route>
-            <Route path='/' element={<Dashboard/>}/>
+            <Route path='/' element={<Login/>}></Route>
+            <Route path='dashboard' element={<Dashboard/>}/>
               <Route path=':section' element={<Dashboard/>}/>
           </Routes>
         </BrowserRouter>

@@ -1,6 +1,12 @@
 import React from 'react'
+import { useNavigate } from 'react-router-dom'
 
 function NavBar() {
+    const navigate = useNavigate()
+
+    const handleLogout = () => {
+        navigate('/login')
+    }
   return (
     <>
         <nav className="navbar navbarPos shadow navbar-expand-lg rounded-3 mt-1 bg-danger">
@@ -25,7 +31,7 @@ function NavBar() {
                     </li>
                 </ul>
                 <div className='d-flex ms-auto'>
-                    <button className='btn shadow btn-dark'>Logout</button>
+                    <button onClick={handleLogout} className='btn shadow btn-dark'>Logout</button>
                 </div>
                 </div>
             </div>

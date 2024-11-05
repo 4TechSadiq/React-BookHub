@@ -1,9 +1,18 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { toast } from 'react-toastify';
 import axios from 'axios';
 
 function Login() {
   const [formdata, setFormData] = useState({})
+  const [data, setData] = useState([])
+
+  useEffect(()=>{
+    axios.get(`http://127.0.0.1:8000/create-admin/`)
+    .then((response)=>{
+      setData(response.data)
+  
+    })
+  },[])}
 
   const handleInput = (e) => {
     const{name,value} = e.target;
@@ -14,31 +23,16 @@ function Login() {
   }
   console.log(formdata)
 
-  const HandleSubmit = async(e) => {
-    e.preventDefault();
-    try{
-      const response = await axios.post("http://127.0.0.1:8000/create-book/",formdata,
-        {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          }
-        }
-      )
-      if (response.status === 201){
-        toast.success("data added",
-          {
-            position: toast.POSITION.TOP_CENTER,
-            theme: 'colored'
-          }
-        )
+  const verifyLogin = () =>{
+    for(let i=0; i<data.length; i++){
+      if(data[i].userID === formdata.userID && data[i].password === formdata.password){
+        toast.success('Login Successful', {position: 'top-center', theme: 'colored'})
+      }else{
+        toast.error('Login Failed', {position: 'top-center', theme: 'colored'})
       }
-    }
-    catch(error){
-      console.log(error.response.data)
-    }
-
   }
+
+  
 
 
   return (

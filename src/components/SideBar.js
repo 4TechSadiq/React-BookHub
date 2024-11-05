@@ -55,12 +55,12 @@ function SideBar() {
                             <i class="fs-4 bi-house"></i> <span class="ms-1 d-none d-sm-inline">List Users</span>
                     </Link>
                     </li>
-                    
+{/*                     
                     <li>
                         <Link to='/catelog' class="nav-link btn text-secondary align-middle px-0">
                             <i class="fs-4 bi-house"></i> <span class="ms-1 d-none d-sm-inline">Catelog</span>
                         </Link>
-                    </li>
+                    </li> */}
                     
                 </ul>
                 <hr></hr>
